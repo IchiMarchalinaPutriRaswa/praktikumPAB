@@ -7,10 +7,11 @@ class SearchField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextField(
       decoration: InputDecoration(
-        hintText: 'Cari baju preloved...',
-        prefixIcon: const Icon(Icons.search),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+        hintText: 'Cari pakaian, sepatu, atau aksesori...',
+        prefixIcon: const Icon(Icons.search_rounded),
+        suffixIcon: IconButton(
+          onPressed: () {},
+          icon: const Icon(Icons.tune_rounded),
         ),
       ),
     );
