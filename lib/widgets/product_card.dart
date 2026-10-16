@@ -6,12 +6,8 @@ class ProductCard extends StatefulWidget {
   final VoidCallback onTap;
 
   const ProductCard({
-    super.key,
-    required this.name,
-    required this.price,
-    required this.condition,
-    required this.imageUrl,
-    required this.onTap,
+    super.key, required this.name, required this.price,
+    required this.condition, required this.imageUrl, required this.onTap,
   });
 
   @override
@@ -32,23 +28,16 @@ class _ProductCardState extends State<ProductCard> {
           onTap: widget.onTap,
           borderRadius: BorderRadius.circular(18),
           child: Container(
+            clipBehavior: Clip.antiAlias,
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(18),
-              boxShadow: const [
-                BoxShadow(
-                  color: Color(0x0A000000),
-                  blurRadius: 12,
-                  offset: Offset(0, 4),
-                )
-              ],
+              boxShadow: const [BoxShadow(color: Color(0x0A000000), blurRadius: 12, offset: Offset(0, 4))],
             ),
-            clipBehavior: Clip.antiAlias,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                AspectRatio(
-                  aspectRatio: .92,
+                Expanded(
                   child: Stack(
                     fit: StackFit.expand,
                     children: [
@@ -61,27 +50,15 @@ class _ProductCardState extends State<ProductCard> {
                         ),
                       ),
                       Positioned(
-                        top: 10,
-                        left: 10,
+                        top: 8, left: 8,
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
-                          decoration: BoxDecoration(
-                            color: green,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: const Text(
-                            'PRELOVED',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 9,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
+                          decoration: BoxDecoration(color: green, borderRadius: BorderRadius.circular(20)),
+                          child: const Text('PRELOVED', style: TextStyle(color: Colors.white, fontSize: 9, fontWeight: FontWeight.w700)),
                         ),
                       ),
                       Positioned(
-                        top: 8,
-                        right: 8,
+                        top: 6, right: 6,
                         child: Material(
                           color: Colors.white.withOpacity(.92),
                           shape: const CircleBorder(),
@@ -92,20 +69,15 @@ class _ProductCardState extends State<ProductCard> {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   duration: const Duration(milliseconds: 900),
-                                  content: Text(
-                                    isFavorite
-                                        ? '${widget.name} dihapus dari favorit'
-                                        : '${widget.name} ditambahkan ke favorit',
-                                  ),
+                                  content: Text(isFavorite
+                                      ? '${widget.name} dihapus dari favorit'
+                                      : '${widget.name} ditambahkan ke favorit'),
                                 ),
                               );
                             },
                             icon: Icon(
-                              isFavorite
-                                  ? Icons.favorite_rounded
-                                  : Icons.favorite_border_rounded,
-                              size: 19,
-                              color: isFavorite ? Colors.red : Colors.black87,
+                              isFavorite ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+                              size: 19, color: isFavorite ? Colors.red : Colors.black87,
                             ),
                             constraints: const BoxConstraints.tightFor(width: 36, height: 36),
                             padding: EdgeInsets.zero,
@@ -116,21 +88,18 @@ class _ProductCardState extends State<ProductCard> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(12, 11, 12, 12),
+                  padding: const EdgeInsets.fromLTRB(10, 8, 10, 9),
                   child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         widget.name,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                          height: 1.2,
-                        ),
+                        style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, height: 1.15),
                       ),
-                      const SizedBox(height: 6),
+                      const SizedBox(height: 5),
                       Row(
                         children: [
                           const Icon(Icons.verified_outlined, size: 13, color: green),
@@ -140,20 +109,13 @@ class _ProductCardState extends State<ProductCard> {
                               widget.condition,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(fontSize: 10.5, color: Colors.black54),
+                              style: const TextStyle(fontSize: 10, color: Colors.black54),
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 8),
-                      Text(
-                        widget.price,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          color: green,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
+                      const SizedBox(height: 5),
+                      Text(widget.price, style: const TextStyle(fontSize: 15, color: green, fontWeight: FontWeight.w800)),
                     ],
                   ),
                 ),
