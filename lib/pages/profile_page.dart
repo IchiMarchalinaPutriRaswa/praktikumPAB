@@ -158,11 +158,11 @@ class FavoritePage extends StatelessWidget {
           return GridView.builder(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
             itemCount: items.length,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
+            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+              maxCrossAxisExtent: 260,
               crossAxisSpacing: 12,
               mainAxisSpacing: 12,
-              childAspectRatio: .67,
+              childAspectRatio: .72,
             ),
             itemBuilder: (_, index) {
               final p = items[index];
@@ -173,7 +173,9 @@ class FavoritePage extends StatelessWidget {
                 imageUrl: p['image']!,
                 onTap: () => Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const ProductDetailPage()),
+                  MaterialPageRoute(builder: (_) => ProductDetailPage(
+                    name: p['name']!, price: p['price']!,
+                    condition: p['condition']!, imageUrl: p['image']!)),
                 ),
               );
             },
