@@ -8,7 +8,7 @@ class HomeBottomNavbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<List<Map<String, String>>>(
+    return ValueListenableBuilder<List<Map<String, dynamic>>>(
       valueListenable: CartStore.items,
       builder: (context, items, _) => NavigationBar(
         selectedIndex: 0,
@@ -34,27 +34,21 @@ class _CartIcon extends StatelessWidget {
   const _CartIcon({required this.count});
 
   @override
-  Widget build(BuildContext context) {
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        const Icon(Icons.shopping_bag_outlined),
-        if (count > 0)
-          Positioned(
-            top: -7,
-            right: -11,
-            child: Container(
-              constraints: const BoxConstraints(minWidth: 18),
-              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-              decoration: BoxDecoration(color: Colors.redAccent, borderRadius: BorderRadius.circular(12)),
-              child: Text(
-                count > 99 ? '99+' : '$count',
-                textAlign: TextAlign.center,
-                style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
-              ),
-            ),
+  Widget build(BuildContext context) => Stack(
+    clipBehavior: Clip.none,
+    children: [
+      const Icon(Icons.shopping_bag_outlined),
+      if (count > 0)
+        Positioned(
+          top: -7, right: -11,
+          child: Container(
+            constraints: const BoxConstraints(minWidth: 18),
+            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+            decoration: BoxDecoration(color: Colors.redAccent, borderRadius: BorderRadius.circular(12)),
+            child: Text(count > 99 ? '99+' : '$count', textAlign: TextAlign.center,
+              style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)),
           ),
-      ],
-    );
-  }
+        ),
+    ],
+  );
 }

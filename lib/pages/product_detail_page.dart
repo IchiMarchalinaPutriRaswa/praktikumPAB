@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import '../cart_store.dart';
 import 'cart_page.dart';
@@ -5,20 +6,19 @@ import 'checkout_page.dart';
 
 class ProductDetailPage extends StatelessWidget {
   final String name, price, condition, imageUrl;
+  final Uint8List? imageBytes;
 
   const ProductDetailPage({
     super.key, required this.name, required this.price,
-    required this.condition, required this.imageUrl,
+    required this.condition, required this.imageUrl, this.imageBytes,
   });
 
   void addCart(BuildContext c) {
-    CartStore.add(name, price, imageUrl);
-    ScaffoldMessenger.of(c).showSnackBar(
-      const SnackBar(
-        content: Text('Produk berhasil ditambahkan ke keranjang'),
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
+    CartStore.add(name, price, imageUrl, imageBytes: imageBytes);
+    ScaffoldMessenger.of(c).showSnackBar(const SnackBar(
+      content: Text('Produk berhasil ditambahkan ke keranjang'),
+      behavior: SnackBarBehavior.floating,
+    ));
   }
 
   @override
@@ -40,7 +40,15 @@ class ProductDetailPage extends StatelessWidget {
             constraints: const BoxConstraints(maxWidth: 500),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(22),
-              child: Image.network(imageUrl, height: 330, fit: BoxFit.cover),
+              child: imageBytes != null
+                  ? Image.memory(imageBytes!, height: 330, fit: BoxFit.cover)
+                  : Image.network(
+                      imageUrl, height: 330, fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => const SizedBox(
+                        height: 330,
+                        child: Center(child: Icon(Icons.image_not_supported_outlined, size: 48)),
+                      ),
+                    ),
             ),
           ),
         ),
@@ -55,25 +63,23 @@ class ProductDetailPage extends StatelessWidget {
         const SizedBox(height: 8),
         const Text('Produk preloved yang nyaman digunakan dan masih terawat.'),
         const SizedBox(height: 24),
-        Row(
-          children: [
-            Expanded(
-              child: OutlinedButton.icon(
-                onPressed: () => addCart(c),
-                icon: const Icon(Icons.add_shopping_cart),
-                label: const Text('Keranjang'),
-              ),
+        Row(children: [
+          Expanded(
+            child: OutlinedButton.icon(
+              onPressed: () => addCart(c),
+              icon: const Icon(Icons.add_shopping_cart),
+              label: const Text('Keranjang'),
             ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: ElevatedButton.icon(
-                onPressed: () => Navigator.push(c, MaterialPageRoute(builder: (_) => const CheckoutPage())),
-                icon: const Icon(Icons.flash_on),
-                label: const Text('Beli Sekarang'),
-              ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: ElevatedButton.icon(
+              onPressed: () => Navigator.push(c, MaterialPageRoute(builder: (_) => const CheckoutPage())),
+              icon: const Icon(Icons.flash_on),
+              label: const Text('Beli Sekarang'),
             ),
-          ],
-        ),
+          ),
+        ]),
       ],
     ),
   );
