@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="prelowear_responsive_marketplace"
+        android:label="prelowear"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
