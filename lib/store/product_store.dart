@@ -22,25 +22,25 @@ class ProductStore {
       name: 'Basic Cotton T-Shirt',
       price: 'Rp45.000',
       condition: 'Kondisi sangat baik',
-      imageUrl: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600',
+      imageUrl: 'https://tse1.mm.bing.net/th/id/OIP.wM-BnE6VHnhH_tv90bWBwAHaKs?r=0&rs=1&pid=ImgDetMain&o=7&rm=3',
     ),
     const ProductItem(
       name: 'Denim Jacket',
       price: 'Rp85.000',
       condition: 'Kondisi baik',
-      imageUrl: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=600',
+      imageUrl: 'https://tse3.mm.bing.net/th/id/OIP.KdNTIT0xX_DHUVo3pWkOLgHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3',
     ),
     const ProductItem(
       name: 'Casual Jeans',
       price: 'Rp65.000',
       condition: 'Kondisi sangat baik',
-      imageUrl: 'https://images.unsplash.com/photo-1542272604-787c3835535d?w=600',
+      imageUrl: 'https://tse3.mm.bing.net/th/id/OIP.j49LEoht8TGdGZLL1EPmUwHaJ1?r=0&rs=1&pid=ImgDetMain&o=7&rm=3',
     ),
     const ProductItem(
       name: 'Knit Sweater',
       price: 'Rp55.000',
       condition: 'Kondisi baik',
-      imageUrl: 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=600',
+      imageUrl: 'https://tse3.mm.bing.net/th/id/OIP.yKH82MY-_8jGnK6B_Fv2rAHaLW?r=0&rs=1&pid=ImgDetMain&o=7&rm=3',
     ),
   ]);
 
