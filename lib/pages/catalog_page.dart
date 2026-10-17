@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'product_detail_page.dart';
-import '../product_store.dart';
+import '../store/product_store.dart';
 import '../widgets/product_card.dart';
 
 class CatalogPage extends StatefulWidget {

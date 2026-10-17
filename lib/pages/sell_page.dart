@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import '../product_store.dart';
+import '../store/product_store.dart';
 
 class SellPage extends StatefulWidget {
   const SellPage({super.key});

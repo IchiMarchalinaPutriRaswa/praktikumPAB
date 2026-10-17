@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../cart_store.dart';
+import '../store/cart_store.dart';
 
 class HomeBottomNavbar extends StatelessWidget {
   final ValueChanged<int> onTap;

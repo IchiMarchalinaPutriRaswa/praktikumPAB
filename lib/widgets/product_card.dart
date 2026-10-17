@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import '../favorite_store.dart';
+import '../store/favorite_store.dart';
 
 class ProductCard extends StatefulWidget {
   final String name, price, condition, imageUrl;
