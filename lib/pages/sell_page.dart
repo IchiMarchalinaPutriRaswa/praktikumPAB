@@ -48,8 +48,7 @@ class _SellPageState extends State<SellPage> {
     }
   }
 
-  String formatPrice(int value) =>
-      'Rp${value.toString().replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (_) => '.')}';
+  String formatPrice(int value) => 'Rp${value.toString().replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (_) => '.')}';
 
   void submitProduct() {
     final name = nameController.text.trim();
@@ -63,10 +62,8 @@ class _SellPageState extends State<SellPage> {
     }
 
     ProductStore.add(ProductItem(
-      name: name,
-      price: formatPrice(price),
-      condition: 'Kondisi $condition',
-      images: List<Uint8List>.from(photos),
+      name: name, price: formatPrice(price),
+      condition: 'Kondisi $condition', images: List<Uint8List>.from(photos),
     ));
 
     ScaffoldMessenger.of(context).showSnackBar(
