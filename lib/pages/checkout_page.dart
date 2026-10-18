@@ -65,7 +65,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
 
     showDialog(context: context, builder: (dialogContext) => AlertDialog(
       title: const Text('Pesanan dicatat'),
-      content: Text('Produk: ${widget.productName}\nHarga: ${widget.productPrice}\nMetode pembayaran: $payment\nIni masih simulasi.'),
+      content: Text('Produk: ${widget.productName}\nHarga: ${widget.productPrice}\nMetode pembayaran: $payment.'),
       actions: [
         TextButton(onPressed: () {
           Navigator.pop(dialogContext);
