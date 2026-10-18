@@ -4,7 +4,7 @@ import 'product_detail_page.dart';
 import 'sell_page.dart';
 import 'cart_page.dart';
 import 'profile_page.dart';
-import 'favorit_page.dart';
+import 'favorite_page.dart';
 import '../store/product_store.dart';
 import '../widgets/product_card.dart';
 import '../widgets/home_bottom_navbar.dart';
