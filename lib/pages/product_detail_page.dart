@@ -23,9 +23,48 @@ class ProductDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext c) => Scaffold(
-    appBar: AppBar(title: const Text('Detail Produk'), actions: [
-      IconButton(onPressed: () => Navigator.push(c, MaterialPageRoute(builder: (_) => const CartPage())), icon: const Icon(Icons.shopping_bag_outlined)),
-    ]),
+    appBar: AppBar(
+      title: const Text('Detail Produk'),
+      actions: [
+        ValueListenableBuilder<List<Map<String, dynamic>>>(
+          valueListenable: CartStore.items,
+          builder: (context, items, _) {
+            final count = items.fold<int>(
+              0, (sum, p) => sum + (p['quantity'] as int? ?? 1),
+            );
+
+            return IconButton(
+              tooltip: 'Keranjang ($count)',
+              onPressed: () => Navigator.push(context,
+                MaterialPageRoute(builder: (_) => const CartPage())),
+              icon: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  const Icon(Icons.shopping_bag_outlined),
+                  if (count > 0)
+                    Positioned(
+                      top: -7, right: -9,
+                      child: Container(
+                        constraints: const BoxConstraints(minWidth: 18),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 5, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: Colors.redAccent,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Text(count > 99 ? '99+' : '$count',
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(color: Colors.white,
+                            fontSize: 10, fontWeight: FontWeight.bold)),
+                      ),
+                    ),
+                ],
+              ),
+            );
+          },
+        ),
+      ],
+    ),
     body: ListView(padding: const EdgeInsets.all(16), children: [
       Center(child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 500),
@@ -34,17 +73,25 @@ class ProductDetailPage extends StatelessWidget {
           child: imageBytes != null
               ? Image.memory(imageBytes!, height: 330, fit: BoxFit.cover)
               : Image.network(imageUrl, height: 330, fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => const SizedBox(height: 330, child: Center(child: Icon(Icons.image_not_supported_outlined, size: 48)))),
+                  errorBuilder: (_, __, ___) => const SizedBox(
+                    height: 330,
+                    child: Center(child: Icon(
+                      Icons.image_not_supported_outlined, size: 48))),
+                ),
         ),
       )),
       const SizedBox(height: 18),
-      Text(name, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w800)),
+      Text(name, style: const TextStyle(
+        fontSize: 24, fontWeight: FontWeight.w800)),
       const SizedBox(height: 6),
-      Text(price, style: const TextStyle(fontSize: 22, color: Color(0xFF245C4A), fontWeight: FontWeight.w800)),
+      Text(price, style: const TextStyle(
+        fontSize: 22, color: Color(0xFF245C4A),
+        fontWeight: FontWeight.w800)),
       const SizedBox(height: 10),
       Chip(label: Text(condition)),
       const Divider(height: 28),
-      const Text('Deskripsi Produk', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w800)),
+      const Text('Deskripsi Produk', style: TextStyle(
+        fontSize: 17, fontWeight: FontWeight.w800)),
       const SizedBox(height: 8),
       const Text('Produk preloved yang nyaman digunakan dan masih terawat.'),
       const SizedBox(height: 24),
@@ -57,7 +104,8 @@ class ProductDetailPage extends StatelessWidget {
         const SizedBox(width: 10),
         Expanded(child: ElevatedButton.icon(
           onPressed: () => Navigator.push(c, MaterialPageRoute(
-            builder: (_) => CheckoutPage(productName: name, productPrice: price),
+            builder: (_) => CheckoutPage(
+              productName: name, productPrice: price),
           )),
           icon: const Icon(Icons.flash_on),
           label: const Text('Beli Sekarang'),
