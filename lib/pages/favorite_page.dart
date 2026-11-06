@@ -26,7 +26,7 @@ class FavoritePage extends StatelessWidget {
                 padding: EdgeInsets.all(32),
                 child: Column(mainAxisSize: MainAxisSize.min, children: [
                   Icon(Icons.favorite_border_rounded, size: 64,
-                      color: Color(0xFF245C4A)),
+                      color: Color(0xFF89AC46)),
                   SizedBox(height: 12),
                   Text('Belum ada favorit', style: TextStyle(
                       fontSize: 18, fontWeight: FontWeight.w800)),

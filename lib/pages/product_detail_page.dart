@@ -92,7 +92,7 @@ class ProductDetailPage extends StatelessWidget {
           fontSize: 24, fontWeight: FontWeight.w800)),
       const SizedBox(height: 6),
       Text(price, style: const TextStyle(fontSize: 22,
-          color: Color(0xFF245C4A), fontWeight: FontWeight.w800)),
+          color: Color(0xFF89AC46), fontWeight: FontWeight.w800)),
       const SizedBox(height: 10),
       Chip(label: Text(condition)),
       const Divider(height: 28),

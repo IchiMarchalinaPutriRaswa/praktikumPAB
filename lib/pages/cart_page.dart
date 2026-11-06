@@ -10,7 +10,7 @@ class CartPage extends StatelessWidget {
     width: 76, height: 76,
     child: ColoredBox(color: Color(0xFFE8EEEB),
       child: Icon(Icons.image_not_supported_outlined,
-          color: Color(0xFF245C4A))),
+          color: Color(0xFF89AC46))),
   );
 
   Widget productImage(Map<String, dynamic> p) {
@@ -79,7 +79,7 @@ class CartPage extends StatelessWidget {
                       Text(p['name'] as String? ?? '',
                           style: const TextStyle(fontWeight: FontWeight.bold)),
                       Text(p['price'] as String? ?? '',
-                          style: const TextStyle(color: Color(0xFF245C4A))),
+                          style: const TextStyle(color: Color(0xFF89AC46))),
                       Row(children: [
                         IconButton(
                           onPressed: () => CartStore.decrease(e.key),
@@ -117,7 +117,7 @@ class CartPage extends StatelessWidget {
                 style: TextStyle(fontWeight: FontWeight.w700)),
             const Spacer(),
             Text(formatPrice(total), style: const TextStyle(
-                color: Color(0xFF245C4A), fontWeight: FontWeight.w800)),
+                color: Color(0xFF89AC46), fontWeight: FontWeight.w800)),
           ]),
           const SizedBox(height: 14),
           ElevatedButton(

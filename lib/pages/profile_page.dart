@@ -11,7 +11,7 @@ class ProfilePage extends StatelessWidget {
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(color: const Color(0xFFE5EEE9), borderRadius: BorderRadius.circular(22)),
         child: const Column(children: [
-          CircleAvatar(radius: 38, backgroundColor: Colors.white, child: Icon(Icons.person, size: 42, color: Color(0xFF245C4A))),
+          CircleAvatar(radius: 38, backgroundColor: Colors.white, child: Icon(Icons.person, size: 42, color: Color(0xFF89AC46))),
           SizedBox(height: 12),
           Text('Pengguna PreloWear', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800)),
           SizedBox(height: 4),
@@ -43,7 +43,7 @@ class _BiodataTile extends StatelessWidget {
     child: ListTile(
       leading: CircleAvatar(
         backgroundColor: const Color(0xFFE5EEE9),
-        child: Icon(icon, color: const Color(0xFF245C4A)),
+        child: Icon(icon, color: const Color(0xFF89AC46)),
       ),
       title: Text(title, style: const TextStyle(fontSize: 13, color: Colors.black54)),
       subtitle: Padding(

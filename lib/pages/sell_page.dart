@@ -79,7 +79,7 @@ class _SellPageState extends State<SellPage> {
           decoration: BoxDecoration(color: const Color(0xFFE5EEE9), borderRadius: BorderRadius.circular(20), border: Border.all(color: const Color(0xFFD5E2DC))),
           child: photo == null
               ? const Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  Icon(Icons.add_a_photo_outlined, size: 34, color: Color(0xFF245C4A)),
+                  Icon(Icons.add_a_photo_outlined, size: 34, color: Color(0xFF89AC46)),
                   SizedBox(height: 8),
                   Text('Tambah foto produk', style: TextStyle(fontWeight: FontWeight.w700)),
                   SizedBox(height: 3),

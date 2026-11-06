@@ -6,7 +6,7 @@ void main() => runApp(const PreloWearApp());
 class PreloWearApp extends StatelessWidget {
   const PreloWearApp({super.key});
 
-  static const green = Color(0xFF245C4A);
+  static const green = Color(0xFF89AC46);
 
   @override
   Widget build(BuildContext context) {

@@ -70,7 +70,7 @@ class _HomeContent extends StatelessWidget {
           children: [
             Container(
               width: double.infinity, padding: const EdgeInsets.all(22),
-              decoration: BoxDecoration(color: const Color(0xFF245C4A),
+              decoration: BoxDecoration(color: const Color(0xFF89AC46),
                   borderRadius: BorderRadius.circular(22)),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start,
                 children: const [

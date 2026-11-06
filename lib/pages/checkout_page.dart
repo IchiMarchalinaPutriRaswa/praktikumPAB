@@ -48,7 +48,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
           const Divider(),
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             const Text('Total', style: TextStyle(fontWeight: FontWeight.w800)),
-            Text(widget.productPrice, style: const TextStyle(fontSize: 18, color: Color(0xFF245C4A), fontWeight: FontWeight.w800)),
+            Text(widget.productPrice, style: const TextStyle(fontSize: 18, color: Color(0xFF89AC46), fontWeight: FontWeight.w800)),
           ]),
         ]),
       ),
@@ -90,7 +90,7 @@ class _PaymentTile extends StatelessWidget {
     child: RadioListTile<String>(
       value: value, groupValue: groupValue, onChanged: onChanged,
       title: Text(title),
-      secondary: Icon(icon, color: const Color(0xFF245C4A)),
+      secondary: Icon(icon, color: const Color(0xFF89AC46)),
     ),
   );
 }

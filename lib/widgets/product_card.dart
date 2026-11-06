@@ -19,7 +19,7 @@ class ProductCard extends StatefulWidget {
 }
 
 class _ProductCardState extends State<ProductCard> {
-  static const green = Color(0xFF245C4A);
+  static const green = Color(0xFF89AC46);
 
   Widget noImage() => const ColoredBox(
     color: Color(0xFFE8EEEB),
