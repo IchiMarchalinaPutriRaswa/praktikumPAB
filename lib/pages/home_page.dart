@@ -17,7 +17,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int selectedIndex = 0;
-
   void changePage(int index) => setState(() => selectedIndex = index);
 
   void openFavorites() => Navigator.push(context,
@@ -26,7 +25,8 @@ class _HomePageState extends State<HomePage> {
   void openProduct(ProductItem p) => Navigator.push(context,
       MaterialPageRoute(builder: (_) => ProductDetailPage(
         name: p.name, price: p.price, condition: p.condition,
-        imageUrl: p.imageUrl, imageBytes: p.imageBytes,
+        imageUrl: p.imageUrl, imageAsset: p.imageAsset,
+        imageBytes: p.imageBytes,
       )));
 
   @override
@@ -37,7 +37,6 @@ class _HomePageState extends State<HomePage> {
       const CatalogPage(), const SellPage(),
       const CartPage(), const ProfilePage(),
     ];
-
     return Scaffold(
       body: IndexedStack(index: selectedIndex, children: pages),
       bottomNavigationBar: HomeBottomNavbar(
@@ -109,10 +108,12 @@ class _HomeContent extends StatelessWidget {
                     mainAxisSpacing: 14, childAspectRatio: 0.58),
                   itemBuilder: (context, i) {
                     final p = products[i];
-                    return ProductCard(name: p.name, price: p.price,
+                    return ProductCard(
+                      name: p.name, price: p.price,
                       condition: p.condition, imageUrl: p.imageUrl,
-                      imageBytes: p.imageBytes,
-                      onTap: () => onProduct(p));
+                      imageAsset: p.imageAsset, imageBytes: p.imageBytes,
+                      onTap: () => onProduct(p),
+                    );
                   },
                 );
               }),

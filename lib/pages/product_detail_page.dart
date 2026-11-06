@@ -6,15 +6,37 @@ import 'checkout_page.dart';
 
 class ProductDetailPage extends StatelessWidget {
   final String name, price, condition, imageUrl;
+  final String? imageAsset;
   final Uint8List? imageBytes;
 
   const ProductDetailPage({
     super.key, required this.name, required this.price,
-    required this.condition, required this.imageUrl, this.imageBytes,
+    required this.condition, required this.imageUrl,
+    this.imageAsset, this.imageBytes,
   });
 
+  Widget productImage() {
+    const fallback = SizedBox(height: 330, child: Center(
+      child: Icon(Icons.image_not_supported_outlined, size: 48)));
+
+    if (imageBytes != null) {
+      return Image.memory(imageBytes!, height: 330, fit: BoxFit.cover,
+          errorBuilder: (_, __, ___) => fallback);
+    }
+    if (imageAsset != null && imageAsset!.isNotEmpty) {
+      return Image.asset(imageAsset!, height: 330, fit: BoxFit.cover,
+          errorBuilder: (_, __, ___) => fallback);
+    }
+    if (imageUrl.isNotEmpty) {
+      return Image.network(imageUrl, height: 330, fit: BoxFit.cover,
+          errorBuilder: (_, __, ___) => fallback);
+    }
+    return fallback;
+  }
+
   void addCart(BuildContext c) {
-    CartStore.add(name, price, imageUrl, imageBytes: imageBytes);
+    CartStore.add(name, price, imageUrl,
+        imageBytes: imageBytes, imageAsset: imageAsset);
     ScaffoldMessenger.of(c).showSnackBar(const SnackBar(
       content: Text('Produk berhasil ditambahkan ke keranjang'),
       behavior: SnackBarBehavior.floating,
@@ -30,36 +52,28 @@ class ProductDetailPage extends StatelessWidget {
           valueListenable: CartStore.items,
           builder: (context, items, _) {
             final count = items.fold<int>(
-              0, (sum, p) => sum + (p['quantity'] as int? ?? 1),
-            );
-
+                0, (sum, p) => sum + (p['quantity'] as int? ?? 1));
             return IconButton(
               tooltip: 'Keranjang ($count)',
               onPressed: () => Navigator.push(context,
-                MaterialPageRoute(builder: (_) => const CartPage())),
-              icon: Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  const Icon(Icons.shopping_bag_outlined),
-                  if (count > 0)
-                    Positioned(
-                      top: -7, right: -9,
-                      child: Container(
-                        constraints: const BoxConstraints(minWidth: 18),
-                        padding: const EdgeInsets.symmetric(
+                  MaterialPageRoute(builder: (_) => const CartPage())),
+              icon: Stack(clipBehavior: Clip.none, children: [
+                const Icon(Icons.shopping_bag_outlined),
+                if (count > 0)
+                  Positioned(top: -7, right: -9,
+                    child: Container(
+                      constraints: const BoxConstraints(minWidth: 18),
+                      padding: const EdgeInsets.symmetric(
                           horizontal: 5, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: Colors.redAccent,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Text(count > 99 ? '99+' : '$count',
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(color: Colors.white,
+                      decoration: BoxDecoration(color: Colors.redAccent,
+                          borderRadius: BorderRadius.circular(12)),
+                      child: Text(count > 99 ? '99+' : '$count',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(color: Colors.white,
                             fontSize: 10, fontWeight: FontWeight.bold)),
-                      ),
                     ),
-                ],
-              ),
+                  ),
+              ]),
             );
           },
         ),
@@ -70,28 +84,20 @@ class ProductDetailPage extends StatelessWidget {
         constraints: const BoxConstraints(maxWidth: 500),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(22),
-          child: imageBytes != null
-              ? Image.memory(imageBytes!, height: 330, fit: BoxFit.cover)
-              : Image.network(imageUrl, height: 330, fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => const SizedBox(
-                    height: 330,
-                    child: Center(child: Icon(
-                      Icons.image_not_supported_outlined, size: 48))),
-                ),
+          child: productImage(),
         ),
       )),
       const SizedBox(height: 18),
       Text(name, style: const TextStyle(
-        fontSize: 24, fontWeight: FontWeight.w800)),
+          fontSize: 24, fontWeight: FontWeight.w800)),
       const SizedBox(height: 6),
-      Text(price, style: const TextStyle(
-        fontSize: 22, color: Color(0xFF245C4A),
-        fontWeight: FontWeight.w800)),
+      Text(price, style: const TextStyle(fontSize: 22,
+          color: Color(0xFF245C4A), fontWeight: FontWeight.w800)),
       const SizedBox(height: 10),
       Chip(label: Text(condition)),
       const Divider(height: 28),
       const Text('Deskripsi Produk', style: TextStyle(
-        fontSize: 17, fontWeight: FontWeight.w800)),
+          fontSize: 17, fontWeight: FontWeight.w800)),
       const SizedBox(height: 8),
       const Text('Produk preloved yang nyaman digunakan dan masih terawat.'),
       const SizedBox(height: 24),
@@ -105,8 +111,7 @@ class ProductDetailPage extends StatelessWidget {
         Expanded(child: ElevatedButton.icon(
           onPressed: () => Navigator.push(c, MaterialPageRoute(
             builder: (_) => CheckoutPage(
-              productName: name, productPrice: price),
-          )),
+                productName: name, productPrice: price))),
           icon: const Icon(Icons.flash_on),
           label: const Text('Beli Sekarang'),
         )),

@@ -4,13 +4,18 @@ import 'package:flutter/foundation.dart';
 class CartStore {
   static final ValueNotifier<List<Map<String, dynamic>>> items = ValueNotifier([]);
 
-  static void add(String name, String price, String image, {Uint8List? imageBytes}) {
+  static void add(String name, String price, String image, {
+    Uint8List? imageBytes, String? imageAsset,
+  }) {
     final updated = [...items.value];
     final index = updated.indexWhere((p) => p['name'] == name);
     if (index >= 0) {
       updated[index] = {...updated[index], 'quantity': (updated[index]['quantity'] as int? ?? 1) + 1};
     } else {
-      updated.add({'name': name, 'price': price, 'image': image, 'imageBytes': imageBytes, 'quantity': 1});
+      updated.add({
+        'name': name, 'price': price, 'image': image,
+        'imageBytes': imageBytes, 'imageAsset': imageAsset, 'quantity': 1,
+      });
     }
     items.value = updated;
   }
