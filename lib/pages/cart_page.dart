@@ -123,10 +123,13 @@ class CartPage extends StatelessWidget {
           ElevatedButton(
             onPressed: () => Navigator.push(c, MaterialPageRoute(
               builder: (_) => CheckoutPage(
-                  productName: names, productPrice: formatPrice(total)),
+                productName: names,
+                productPrice: formatPrice(total),
+                fromCart: true,
+              ),
             )),
-            child: const Text('Lanjut Checkout')),
-        ]);
+            child: const Text('Lanjut Checkout')),        
+          ]);
       },
     ),
   );
