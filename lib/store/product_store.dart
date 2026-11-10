@@ -18,7 +18,7 @@ class ProductStore {
   static final ValueNotifier<List<ProductItem>> items = ValueNotifier([
     const ProductItem(
       name: 'Denim Jacket', price: 'Rp85.000',
-      condition: 'Kondisi baik',
+      condition: 'Kondisi cukup baik',
       imageUrl: 'https://tse3.mm.bing.net/th/id/OIP.KdNTIT0xX_DHUVo3pWkOLgHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3',
     ),
     const ProductItem(
@@ -28,12 +28,12 @@ class ProductStore {
     ),
     const ProductItem(
       name: 'Knit Sweater', price: 'Rp55.000',
-      condition: 'Kondisi baik',
+      condition: 'Kondisi seperti baru',
       imageUrl: 'https://tse3.mm.bing.net/th/id/OIP.yKH82MY-_8jGnK6B_Fv2rAHaLW?r=0&rs=1&pid=ImgDetMain&o=7&rm=3',
     ),
     const ProductItem(
       name: 'Hoodie', price: 'Rp50.000',
-      condition: 'Kondisi baik',
+      condition: 'Kondisi cukup baik',
       imageAsset: 'assets/images/hoodie.jpg',
     ),
     const ProductItem(
