@@ -1,9 +1,11 @@
+
 import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 
 class ProductItem {
   final String name, price, condition, imageUrl;
   final String? imageAsset;
+  final List<String> imageAssets;
   final List<Uint8List> images;
   final String sizeLabel, defects, description;
   final double? chestCm, lengthCm, shoulderCm, sleeveCm;
@@ -11,7 +13,8 @@ class ProductItem {
 
   const ProductItem({
     required this.name, required this.price, required this.condition,
-    this.imageUrl = '', this.imageAsset, this.images = const [],
+    this.imageUrl = '', this.imageAsset, this.imageAssets = const [],
+    this.images = const [],
     this.sizeLabel = '-', this.chestCm, this.lengthCm,
     this.shoulderCm, this.sleeveCm,
     this.defects = 'Tidak ada kekurangan yang diketahui.',
@@ -30,11 +33,8 @@ class ProductStore {
       condition: 'Kondisi cukup baik',
       imageUrl: 'https://tse3.mm.bing.net/th/id/OIP.KdNTIT0xX_DHUVo3pWkOLgHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3',
       description: 'Jaket denim kasual dengan desain klasik yang cocok digunakan untuk berbagai aktivitas. Bahan masih nyaman dan memiliki warna yang menarik.',
-      sizeLabel: 'L',
-      chestCm: 102,
-      lengthCm: 62,
-      shoulderCm: 43,
-      sleeveCm: 59,
+      sizeLabel: 'L', chestCm: 102, lengthCm: 62,
+      shoulderCm: 43, sleeveCm: 59,
       defects: 'Terdapat sedikit perubahan warna pada bagian lipatan lengan akibat pemakaian. Tidak ditemukan lubang atau jahitan rusak.',
     ),
     const ProductItem(
@@ -43,8 +43,7 @@ class ProductStore {
       condition: 'Kondisi cukup baik',
       imageUrl: 'https://tse3.mm.bing.net/th/id/OIP.j49LEoht8TGdGZLL1EPmUwHaJ1?r=0&rs=1&pid=ImgDetMain&o=7&rm=3',
       description: 'Celana jeans kasual dengan model sederhana yang mudah dipadukan dengan berbagai atasan. Ukuran label 30, lingkar pinggang sekitar 78 cm dan lingkar pinggul 98 cm.',
-      sizeLabel: '30',
-      lengthCm: 98,
+      sizeLabel: '30', lengthCm: 98,
       defects: 'Warna sedikit memudar pada bagian lutut akibat pemakaian. Tidak ditemukan lubang atau jahitan yang terlepas.',
     ),
     const ProductItem(
@@ -53,11 +52,8 @@ class ProductStore {
       condition: 'Kondisi seperti baru',
       imageUrl: 'https://tse3.mm.bing.net/th/id/OIP.yKH82MY-_8jGnK6B_Fv2rAHaLW?r=0&rs=1&pid=ImgDetMain&o=7&rm=3',
       description: 'Sweater rajut dengan tekstur lembut dan desain minimalis. Cocok digunakan untuk aktivitas santai maupun kegiatan sehari-hari.',
-      sizeLabel: 'M',
-      chestCm: 100,
-      lengthCm: 61,
-      shoulderCm: 41,
-      sleeveCm: 58,
+      sizeLabel: 'M', chestCm: 100, lengthCm: 61,
+      shoulderCm: 41, sleeveCm: 58,
       defects: 'Tidak ditemukan noda, lubang, jahitan rusak, maupun perubahan warna. Kondisi pakaian masih sangat terawat.',
     ),
     const ProductItem(
@@ -66,11 +62,8 @@ class ProductStore {
       condition: 'Kondisi cukup baik',
       imageAsset: 'assets/images/hoodie.jpg',
       description: 'Hoodie kasual dengan bahan yang nyaman digunakan. Memiliki desain simpel dan cocok untuk kegiatan sehari-hari.',
-      sizeLabel: 'L',
-      chestCm: 110,
-      lengthCm: 68,
-      shoulderCm: 47,
-      sleeveCm: 62,
+      sizeLabel: 'L', chestCm: 110, lengthCm: 68,
+      shoulderCm: 47, sleeveCm: 62,
       defects: 'Terdapat sedikit bulu halus pada permukaan bahan akibat pemakaian. Tidak ditemukan lubang atau kerusakan jahitan.',
     ),
     const ProductItem(
@@ -79,8 +72,7 @@ class ProductStore {
       condition: 'Kondisi seperti baru',
       imageAsset: 'assets/images/rok.jpg',
       description: 'Rok floral dengan motif bunga yang memberikan tampilan feminin. Ukuran label M, lingkar pinggang sekitar 72 cm dan lingkar pinggul 98 cm.',
-      sizeLabel: 'M',
-      lengthCm: 76,
+      sizeLabel: 'M', lengthCm: 76,
       defects: 'Tidak ditemukan noda, lubang, jahitan rusak, maupun warna memudar. Produk masih dalam kondisi terawat.',
     ),
     const ProductItem(
@@ -89,12 +81,39 @@ class ProductStore {
       condition: 'Kondisi sangat baik',
       imageAsset: 'assets/images/outer.jpg',
       description: 'Outer wanita bermotif polkadot dengan detail kancing depan dan saku. Memiliki desain menarik serta nyaman digunakan untuk aktivitas sehari-hari.',
-      sizeLabel: 'M',
-      chestCm: 96,
-      lengthCm: 62,
-      shoulderCm: 39,
-      sleeveCm: 56,
+      sizeLabel: 'M', chestCm: 96, lengthCm: 62,
+      shoulderCm: 39, sleeveCm: 56,
       defects: 'Tidak ditemukan noda, lubang, jahitan rusak, maupun warna memudar. Pakaian masih terawat dengan baik.',
+    ),
+    const ProductItem(
+      name: 'Floral Embroidery Knit Cardigan',
+      price: 'Rp85.000',
+      condition: 'Kondisi cukup baik',
+      imageAssets: [
+        'assets/images/cardigan1.jpg',
+        'assets/images/cardigan2.jpg',
+        'assets/images/cardigan3.jpg',
+      ],
+      description: 'Cardigan rajut wanita berwarna cream dengan detail bordir bunga berwarna pink dan kuning yang memberikan kesan manis dan feminin. Memiliki model kancing depan, lengan panjang, serta bahan rajut yang nyaman digunakan.',
+      sizeLabel: 'M', chestCm: 100, lengthCm: 55,
+      shoulderCm: 40, sleeveCm: 55,
+      defects: 'Terdapat sedikit tanda pemakaian pada bagian rajutan, tetapi tidak memengaruhi fungsi dan kenyamanan pakaian.',
+    ),
+    const ProductItem(
+      name: 'Amora Button Blouse',
+      price: 'Rp65.000',
+      condition: 'Kondisi cukup baik',
+      imageAssets: [
+        'assets/images/amora_blouse1.jpg',
+        'assets/images/amora_blouse2.jpg',
+        'assets/images/amora_blouse3.jpg',
+        'assets/images/amora_blouse4.jpg',
+        'assets/images/amora_blouse5.jpg',
+      ],
+      description: 'Kemeja wanita lengan panjang dengan motif bunga bernuansa pastel pink dan cream yang memberikan kesan vintage dan feminin. Memiliki detail kancing depan, kerah sederhana, serta potongan yang nyaman digunakan.',
+      sizeLabel: 'M', chestCm: 96, lengthCm: 65,
+      shoulderCm: 38, sleeveCm: 56,
+      defects: 'Terdapat sedikit kerutan pada kain akibat penyimpanan dan pemakaian, tetapi tidak memengaruhi fungsi pakaian.',
     ),
   ]);
 

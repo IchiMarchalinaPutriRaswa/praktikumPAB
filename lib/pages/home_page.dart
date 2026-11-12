@@ -31,11 +31,12 @@ class _HomePageState extends State<HomePage> {
       MaterialPageRoute(builder: (_) => ProductDetailPage(
         name: p.name, price: p.price, condition: p.condition,
         imageUrl: p.imageUrl, imageAsset: p.imageAsset,
-        imageBytes: p.imageBytes, description: p.description,
-        sizeLabel: p.sizeLabel, chestCm: p.chestCm,
-        lengthCm: p.lengthCm, shoulderCm: p.shoulderCm,
-        sleeveCm: p.sleeveCm, defects: p.defects,
-        evidenceImageBytes: p.evidenceImage,
+        imageBytes: p.imageBytes, images: p.images,
+        imageAssets: p.imageAssets,
+        description: p.description, sizeLabel: p.sizeLabel,
+        chestCm: p.chestCm, lengthCm: p.lengthCm,
+        shoulderCm: p.shoulderCm, sleeveCm: p.sleeveCm,
+        defects: p.defects,
       )));
 
   @override
@@ -152,7 +153,8 @@ class _HomeContent extends StatelessWidget {
                     return ProductCard(
                       name: p.name, price: p.price,
                       condition: p.condition, imageUrl: p.imageUrl,
-                      imageAsset: p.imageAsset, imageBytes: p.imageBytes,
+                      imageAsset: p.imageAsset, imageAssets: p.imageAssets,
+                      imageBytes: p.imageBytes,
                       onTap: () => onProduct(p),
                     );
                   },

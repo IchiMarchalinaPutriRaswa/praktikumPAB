@@ -1,3 +1,4 @@
+
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import '../store/cart_store.dart';
@@ -15,11 +16,16 @@ class CartPage extends StatelessWidget {
 
   Widget productImage(Map<String, dynamic> p) {
     final bytes = p['imageBytes'] as Uint8List?;
+    final assets = p['imageAssets'] as List<String>? ?? [];
     final asset = p['imageAsset'] as String?;
     final url = p['image'] as String? ?? '';
 
     if (bytes != null) {
       return Image.memory(bytes, width: 76, height: 76,
+          fit: BoxFit.cover, errorBuilder: (_, __, ___) => noImage());
+    }
+    if (assets.isNotEmpty) {
+      return Image.asset(assets.first, width: 76, height: 76,
           fit: BoxFit.cover, errorBuilder: (_, __, ___) => noImage());
     }
     if (asset != null && asset.isNotEmpty) {
@@ -51,24 +57,50 @@ class CartPage extends StatelessWidget {
           return const Center(child: Text('Keranjang Kosong'));
         }
 
-        final totalItems = items.fold<int>(0,
+        final selectedItems = items.where(
+            (p) => p['selected'] as bool? ?? true).toList();
+
+        final allSelected = selectedItems.length == items.length;
+
+        final totalItems = selectedItems.fold<int>(0,
             (sum, p) => sum + (p['quantity'] as int? ?? 1));
-        final total = items.fold<int>(0, (sum, p) =>
+
+        final total = selectedItems.fold<int>(0, (sum, p) =>
             sum + priceNumber(p['price'] as String?) *
                 (p['quantity'] as int? ?? 1));
-        final names = items.map(
+
+        final names = selectedItems.map(
             (p) => p['name'] as String? ?? '').join(', ');
 
         return ListView(padding: const EdgeInsets.all(16), children: [
+          Row(children: [
+            Checkbox(
+              value: allSelected,
+              activeColor: const Color(0xFF89AC46),
+              onChanged: (value) =>
+                  CartStore.setAllSelected(value ?? false),
+            ),
+            const Text('Pilih semua',
+                style: TextStyle(fontWeight: FontWeight.w600)),
+          ]),
+          const SizedBox(height: 4),
+
           ...items.asMap().entries.map((e) {
             final p = e.value;
             final qty = p['quantity'] as int? ?? 1;
+            final selected = p['selected'] as bool? ?? true;
 
             return Card(
               margin: const EdgeInsets.only(bottom: 10),
               child: Padding(
                 padding: const EdgeInsets.all(10),
                 child: Row(children: [
+                  Checkbox(
+                    value: selected,
+                    activeColor: const Color(0xFF89AC46),
+                    onChanged: (value) =>
+                        CartStore.setSelected(e.key, value ?? false),
+                  ),
                   ClipRRect(
                     borderRadius: BorderRadius.circular(10),
                     child: productImage(p)),
@@ -106,11 +138,12 @@ class CartPage extends StatelessWidget {
               ),
             );
           }),
+
           const SizedBox(height: 16),
           const Text('Ringkasan Pesanan', style: TextStyle(
               fontSize: 17, fontWeight: FontWeight.w800)),
           const SizedBox(height: 8),
-          Text('Total item: $totalItems'),
+          Text('Total item dipilih: $totalItems'),
           const SizedBox(height: 4),
           Row(children: [
             const Text('Total harga',
@@ -121,15 +154,16 @@ class CartPage extends StatelessWidget {
           ]),
           const SizedBox(height: 14),
           ElevatedButton(
-            onPressed: () => Navigator.push(c, MaterialPageRoute(
-              builder: (_) => CheckoutPage(
-                productName: names,
-                productPrice: formatPrice(total),
-                fromCart: true,
-              ),
-            )),
-            child: const Text('Lanjut Checkout')),        
-          ]);
+            onPressed: selectedItems.isEmpty ? null : () =>
+                Navigator.push(c, MaterialPageRoute(
+                  builder: (_) => CheckoutPage(
+                    productName: names,
+                    productPrice: formatPrice(total),
+                    fromCart: true,
+                  ),
+                )),
+            child: const Text('Lanjut Checkout')),
+        ]);
       },
     ),
   );

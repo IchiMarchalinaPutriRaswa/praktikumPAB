@@ -1,3 +1,4 @@
+
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import '../store/favorite_store.dart';
@@ -5,13 +6,15 @@ import '../store/favorite_store.dart';
 class ProductCard extends StatefulWidget {
   final String name, price, condition, imageUrl;
   final String? imageAsset;
+  final List<String> imageAssets;
   final Uint8List? imageBytes;
   final VoidCallback onTap;
 
   const ProductCard({
     super.key, required this.name, required this.price,
     required this.condition, required this.imageUrl,
-    this.imageAsset, this.imageBytes, required this.onTap,
+    this.imageAsset, this.imageAssets = const [],
+    this.imageBytes, required this.onTap,
   });
 
   @override
@@ -29,6 +32,10 @@ class _ProductCardState extends State<ProductCard> {
   Widget productImage() {
     if (widget.imageBytes != null) {
       return Image.memory(widget.imageBytes!, fit: BoxFit.cover,
+          errorBuilder: (_, __, ___) => noImage());
+    }
+    if (widget.imageAssets.isNotEmpty) {
+      return Image.asset(widget.imageAssets.first, fit: BoxFit.cover,
           errorBuilder: (_, __, ___) => noImage());
     }
     if (widget.imageAsset != null && widget.imageAsset!.isNotEmpty) {

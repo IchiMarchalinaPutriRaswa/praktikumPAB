@@ -22,11 +22,12 @@ class _CatalogPageState extends State<CatalogPage> {
     Navigator.push(c, MaterialPageRoute(builder: (_) => ProductDetailPage(
       name: p.name, price: p.price, condition: p.condition,
       imageUrl: p.imageUrl, imageAsset: p.imageAsset,
-      imageBytes: p.imageBytes, sizeLabel: p.sizeLabel,
-      chestCm: p.chestCm, lengthCm: p.lengthCm,
-      shoulderCm: p.shoulderCm, sleeveCm: p.sleeveCm,
-      defects: p.defects, description: p.description,
-      evidenceImageBytes: p.evidenceImage,
+      imageBytes: p.imageBytes, images: p.images,
+      imageAssets: p.imageAssets,
+      sizeLabel: p.sizeLabel, chestCm: p.chestCm,
+      lengthCm: p.lengthCm, shoulderCm: p.shoulderCm,
+      sleeveCm: p.sleeveCm, defects: p.defects, 
+      description: p.description,
     )));
   }
 
@@ -79,7 +80,8 @@ class _CatalogPageState extends State<CatalogPage> {
                     return ProductCard(
                       name: p.name, price: p.price,
                       condition: p.condition, imageUrl: p.imageUrl,
-                      imageAsset: p.imageAsset, imageBytes: p.imageBytes,
+                      imageAsset: p.imageAsset, imageAssets: p.imageAssets,
+                      imageBytes: p.imageBytes,
                       onTap: () => openProduct(context, p),
                     );
                   },
