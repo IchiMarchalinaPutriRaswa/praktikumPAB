@@ -22,7 +22,11 @@ class _CatalogPageState extends State<CatalogPage> {
     Navigator.push(c, MaterialPageRoute(builder: (_) => ProductDetailPage(
       name: p.name, price: p.price, condition: p.condition,
       imageUrl: p.imageUrl, imageAsset: p.imageAsset,
-      imageBytes: p.imageBytes,
+      imageBytes: p.imageBytes, sizeLabel: p.sizeLabel,
+      chestCm: p.chestCm, lengthCm: p.lengthCm,
+      shoulderCm: p.shoulderCm, sleeveCm: p.sleeveCm,
+      defects: p.defects, description: p.description,
+      evidenceImageBytes: p.evidenceImage,
     )));
   }
 
