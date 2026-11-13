@@ -182,6 +182,7 @@ class _SellPageState extends State<SellPage> {
     ProductStore.add(ProductItem(
       name: nameController.text.trim(), price: formatPrice(price), condition: 'Kondisi ${condition!}',
       images: List<Uint8List>.from(photos), sizeLabel: sizeLabel!,
+      category: clothingType!,
       chestCm: isBottom ? null : measure(chestController), waistCm: isBottom ? measure(waistController) : null,
       lengthCm: measure(lengthController), shoulderCm: isBottom ? null : measure(shoulderController),
       sleeveCm: isBottom ? null : measure(sleeveController),

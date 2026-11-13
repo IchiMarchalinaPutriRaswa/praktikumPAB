@@ -2,7 +2,7 @@ import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 
 class ProductItem {
-  final String name, price, condition, imageUrl;
+  final String name, price, condition, imageUrl, category;
   final String? imageAsset;
   final List<String> imageAssets;
   final List<Uint8List> images;
@@ -14,6 +14,7 @@ class ProductItem {
   const ProductItem({
     required this.name, required this.price, required this.condition,
     this.imageUrl = '', this.imageAsset, this.imageAssets = const [],
+    this.category = '',
     this.images = const [],
     this.sizeLabel = '-', this.chestCm, this.lengthCm,
     this.shoulderCm, this.sleeveCm, this.waistCm,

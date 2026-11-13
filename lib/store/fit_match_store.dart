@@ -3,11 +3,16 @@ import 'package:flutter/foundation.dart';
 class FitMatchStore {
   static final Map<String, double> measurements = {};
   static final Map<String, double> bodyMeasurements = {};
-
   static final Map<String, Map<String, double>> measurementsByCategory = {};
   static final Map<String, Map<String, double>> bodyMeasurementsByCategory = {};
-
   static final ValueNotifier<int> revision = ValueNotifier(0);
+
+  static String normalizeCategory(String category) {
+    final value = category.toLowerCase().trim();
+    if (['celana', 'rok', 'bawahan'].contains(value)) return 'bawahan';
+    if (['atasan', 'outerwear', 'dress'].contains(value)) return 'atasan';
+    return value;
+  }
 
   static void save(Map<String, double> values) {
     if (values.isEmpty) return;
@@ -23,25 +28,34 @@ class FitMatchStore {
 
   static void saveForCategory(String category, Map<String, double> values) {
     if (values.isEmpty) return;
-    measurementsByCategory[category] = Map.from(values);
+    measurementsByCategory[normalizeCategory(category)] = Map.from(values);
     revision.value++;
   }
 
   static void saveBodyForCategory(String category, Map<String, double> values) {
     if (values.isEmpty) return;
-    bodyMeasurementsByCategory[category] = Map.from(values);
+    bodyMeasurementsByCategory[normalizeCategory(category)] = Map.from(values);
     revision.value++;
   }
 
-  static Map<String, double> getMeasurements(String category) =>
-      Map.from(measurementsByCategory[category] ?? {});
+  static Map<String, double> getMeasurements(String category) {
+    final key = normalizeCategory(category);
+    final saved = measurementsByCategory[key];
+    if (saved != null) return Map.from(saved);
+    return measurementsByCategory.isEmpty ? Map.from(measurements) : {};
+  }
 
-  static Map<String, double> getBodyMeasurements(String category) =>
-      Map.from(bodyMeasurementsByCategory[category] ?? {});
+  static Map<String, double> getBodyMeasurements(String category) {
+    final key = normalizeCategory(category);
+    final saved = bodyMeasurementsByCategory[key];
+    if (saved != null) return Map.from(saved);
+    return bodyMeasurementsByCategory.isEmpty ? Map.from(bodyMeasurements) : {};
+  }
 
   static void clearCategory(String category) {
-    measurementsByCategory.remove(category);
-    bodyMeasurementsByCategory.remove(category);
+    final key = normalizeCategory(category);
+    measurementsByCategory.remove(key);
+    bodyMeasurementsByCategory.remove(key);
     revision.value++;
   }
 

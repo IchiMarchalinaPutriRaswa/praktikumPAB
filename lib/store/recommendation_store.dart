@@ -9,7 +9,7 @@ class RecommendationStore {
 
     final products = ProductStore.items.value;
     final favorites = FavoriteStore.favorites.value;
-    final ratings = OrderStore.userRatings.value;
+    final ratings = OrderStore.ratings.value;
     final purchased = <String>{};
 
     for (final order in OrderStore.orders.value) {
@@ -27,12 +27,13 @@ class RecommendationStore {
         .where((e) => e.value.isNotEmpty)
         .map((e) => e.key).toSet();
 
-    final topFit = FitMatchStore.getMeasurements('atasan');
-    final bottomFit = FitMatchStore.getMeasurements('bawahan');
-
     final fitCategories = <String>{
-      if (topFit.isNotEmpty) 'atasan',
-      if (bottomFit.isNotEmpty) 'bawahan',
+      if (FitMatchStore.getMeasurements('atasan').isNotEmpty ||
+          FitMatchStore.getBodyMeasurements('atasan').isNotEmpty)
+        'atasan',
+      if (FitMatchStore.getMeasurements('bawahan').isNotEmpty ||
+          FitMatchStore.getBodyMeasurements('bawahan').isNotEmpty)
+        'bawahan',
     };
 
     if (favorites.isEmpty && purchased.isEmpty &&
@@ -54,11 +55,9 @@ class RecommendationStore {
     for (final name in favorites) {
       addScore(name, 30);
     }
-
     for (final name in purchased) {
       addScore(name, 25);
     }
-
     for (final entry in ratings.entries) {
       if (entry.value.isEmpty) continue;
       final avg = entry.value.reduce((a, b) => a + b) /
@@ -104,11 +103,25 @@ class RecommendationStore {
   }
 
   static String _category(ProductItem p) {
-    final text = '${p.name} ${p.description}'.toLowerCase();
+    final explicit = p.category.toLowerCase().trim();
 
-    if (_has(text, ['jeans', 'celana', 'rok', 'skirt', 'pants'])) {
+    if (['celana', 'rok', 'bawahan'].contains(explicit)) {
       return 'bawahan';
     }
+    if (['atasan', 'outerwear', 'dress'].contains(explicit)) {
+      return 'atasan';
+    }
+
+    if (p.waistCm != null) return 'bawahan';
+    if (p.chestCm != null || p.shoulderCm != null ||
+        p.sleeveCm != null) return 'atasan';
+
+    final text = '${p.name} ${p.description}'.toLowerCase();
+
+    if (_has(text, [
+      'jeans', 'celana', 'rok', 'skirt', 'pants',
+      'trousers', 'shorts',
+    ])) return 'bawahan';
 
     if (_has(text, [
       'jacket', 'hoodie', 'cardigan', 'outer',
@@ -134,7 +147,11 @@ class RecommendationStore {
             };
 
   static bool _hasFitData(ProductItem p) {
-    final values = FitMatchStore.getMeasurements(_category(p));
+    final category = _category(p);
+    final values = {
+      ...FitMatchStore.getMeasurements(category),
+      ...FitMatchStore.getBodyMeasurements(category),
+    };
     final sizes = _productSizes(p);
     return values.keys.any((key) => sizes[key] != null);
   }
@@ -143,11 +160,29 @@ class RecommendationStore {
       (categories[_category(p)] ?? 0) + _fitScore(p);
 
   static int _fitScore(ProductItem p) {
-    final values = FitMatchStore.getMeasurements(_category(p));
-    if (values.isEmpty) return 0;
+    final category = _category(p);
+    final scores = <double>[];
+    final measurements = FitMatchStore.getMeasurements(category);
+    final body = FitMatchStore.getBodyMeasurements(category);
 
+    if (measurements.isNotEmpty) {
+      scores.add(_compare(p, measurements, false));
+    }
+    if (body.isNotEmpty) {
+      scores.add(_compare(p, body, true));
+    }
+
+    return scores.isEmpty
+        ? 0
+        : (scores.reduce((a, b) => a + b) / scores.length).round();
+  }
+
+  static double _compare(
+    ProductItem p, Map<String, double> values, bool bodyMode,
+  ) {
+    final bottom = _category(p) == 'bawahan';
     final sizes = _productSizes(p);
-    final limits = _category(p) == 'bawahan'
+    final limits = bottom
         ? {'waist': 3.0, 'length': 3.0}
         : {
             'chest': 4.0, 'length': 3.0,
@@ -159,19 +194,27 @@ class RecommendationStore {
 
     values.forEach((key, user) {
       final product = sizes[key];
-      if (product == null) return;
+      if (product == null || limits[key] == null) return;
 
       count++;
-      final diff = (product - user).abs();
+      final diff = product - user;
       final limit = limits[key]!;
 
-      if (diff <= limit) {
-        matched++;
-      } else if (diff <= limit * 2) {
-        matched += 0.5;
+      if (!bodyMode) {
+        if (diff.abs() <= limit) matched++;
+        else if (diff.abs() <= limit * 2) matched += 0.5;
+      } else if (key == 'chest') {
+        if (diff >= 4 && diff <= 12) matched++;
+        else if (diff >= 0 && diff <= 16) matched += 0.5;
+      } else if (key == 'waist') {
+        if (diff >= 2 && diff <= 8) matched++;
+        else if (diff >= 0 && diff <= 12) matched += 0.5;
+      } else {
+        if (diff >= -2 && diff <= 4) matched++;
+        else if (diff >= -4 && diff <= 6) matched += 0.5;
       }
     });
 
-    return count == 0 ? 0 : (matched / count * 25).round();
+    return count == 0 ? 0 : matched / count * 25;
   }
 }
