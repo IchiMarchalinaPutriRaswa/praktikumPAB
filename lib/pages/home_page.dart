@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'catalog_page.dart';
 import 'product_detail_page.dart';
@@ -7,6 +8,10 @@ import 'profile_page.dart';
 import 'favorite_page.dart';
 import 'chat_list_page.dart';
 import '../store/product_store.dart';
+import '../store/favorite_store.dart';
+import '../store/order_store.dart';
+import '../store/fit_match_store.dart';
+import '../store/recommendation_store.dart';
 import '../widgets/product_card.dart';
 import '../widgets/home_bottom_navbar.dart';
 
@@ -116,6 +121,86 @@ class _HomeContent extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24),
+
+            // TAMBAHAN: REKOMENDASI PERSONAL
+            AnimatedBuilder(
+              animation: Listenable.merge([
+                FavoriteStore.favorites,
+                OrderStore.orders,
+                OrderStore.ratings,
+                FitMatchStore.revision,
+              ]),
+              builder: (context, _) {
+                final recommended =
+                    RecommendationStore.getRecommendations(limit: 4);
+
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text('Rekomendasi Untukmu',
+                          style: TextStyle(fontSize: 19,
+                            fontWeight: FontWeight.w800)),
+                        const Icon(Icons.auto_awesome,
+                          color: Color(0xFF89AC46)),
+                      ],
+                    ),
+                    const SizedBox(height: 5),
+                    if (recommended.isEmpty)
+                      const Text(
+                        'Gunakan FitMatch, tambahkan produk ke favorit, '
+                        'lakukan pembelian, atau berikan rating '
+                        'untuk mendapatkan rekomendasi personal.',
+                        style: TextStyle(fontSize: 12,
+                          color: Colors.black54),
+                      )
+                    else ...[
+                      const Text(
+                        'Pilihan berdasarkan aktivitas dan preferensimu.',
+                        style: TextStyle(fontSize: 12,
+                          color: Colors.black54),
+                      ),
+                      const SizedBox(height: 12),
+                      LayoutBuilder(builder: (context, constraints) {
+                        final w = constraints.maxWidth;
+                        final columns = w >= 1250 ? 5 :
+                            w >= 850 ? 4 : w >= 550 ? 3 : 2;
+
+                        return GridView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: recommended.length,
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: columns,
+                            crossAxisSpacing: 12,
+                            mainAxisSpacing: 14,
+                            childAspectRatio: 0.58,
+                          ),
+                          itemBuilder: (context, i) {
+                            final p = recommended[i];
+                            return ProductCard(
+                              name: p.name, price: p.price,
+                              condition: p.condition,
+                              imageUrl: p.imageUrl,
+                              imageAsset: p.imageAsset,
+                              imageAssets: p.imageAssets,
+                              imageBytes: p.imageBytes,
+                              onTap: () => onProduct(p),
+                            );
+                          },
+                        );
+                      }),
+                    ],
+                    const SizedBox(height: 24),
+                  ],
+                );
+              },
+            ),
+
+            // PRODUK PILIHAN (KODE LAMA TETAP)
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

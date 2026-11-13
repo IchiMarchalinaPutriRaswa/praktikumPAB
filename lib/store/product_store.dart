@@ -1,4 +1,3 @@
-
 import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 
@@ -9,6 +8,7 @@ class ProductItem {
   final List<Uint8List> images;
   final String sizeLabel, defects, description;
   final double? chestCm, lengthCm, shoulderCm, sleeveCm;
+  final double? waistCm; // TAMBAHAN FITMATCH
   final Uint8List? evidenceImage;
 
   const ProductItem({
@@ -16,7 +16,7 @@ class ProductItem {
     this.imageUrl = '', this.imageAsset, this.imageAssets = const [],
     this.images = const [],
     this.sizeLabel = '-', this.chestCm, this.lengthCm,
-    this.shoulderCm, this.sleeveCm,
+    this.shoulderCm, this.sleeveCm, this.waistCm,
     this.defects = 'Tidak ada kekurangan yang diketahui.',
     this.description = 'Produk preloved yang nyaman digunakan dan masih terawat.',
     this.evidenceImage,
@@ -28,23 +28,34 @@ class ProductItem {
 class ProductStore {
   static final ValueNotifier<List<ProductItem>> items = ValueNotifier([
     const ProductItem(
-      name: 'Denim Jacket',
-      price: 'Rp85.000',
-      condition: 'Kondisi cukup baik',
-      imageUrl: 'https://tse3.mm.bing.net/th/id/OIP.KdNTIT0xX_DHUVo3pWkOLgHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3',
+      name: 'Adidas Denim Jacket',
+      price: 'Rp150.000',
+      condition: 'Kondisi sangat baik',
+      imageAssets: [
+        'assets/images/Denim1.jpg',
+        'assets/images/Denim2.jpg',
+        'assets/images/Denim3.jpg',
+        'assets/images/Denim4.jpg',
+        'assets/images/Denim5.jpg',
+      ],
       description: 'Jaket denim kasual dengan desain klasik yang cocok digunakan untuk berbagai aktivitas. Bahan masih nyaman dan memiliki warna yang menarik.',
       sizeLabel: 'L', chestCm: 102, lengthCm: 62,
       shoulderCm: 43, sleeveCm: 59,
-      defects: 'Terdapat sedikit perubahan warna pada bagian lipatan lengan akibat pemakaian. Tidak ditemukan lubang atau jahitan rusak.',
+      defects: 'Terdapat sedikit perubahan warna pada bagian lipatan lengan akibat pemakaian.',
     ),
     const ProductItem(
-      name: 'Casual Jeans',
-      price: 'Rp65.000',
+      name: 'JHL Wide Leg Jeans',
+      price: 'Rp110.000',
       condition: 'Kondisi cukup baik',
-      imageUrl: 'https://tse3.mm.bing.net/th/id/OIP.j49LEoht8TGdGZLL1EPmUwHaJ1?r=0&rs=1&pid=ImgDetMain&o=7&rm=3',
-      description: 'Celana jeans kasual dengan model sederhana yang mudah dipadukan dengan berbagai atasan. Ukuran label 30, lingkar pinggang sekitar 78 cm dan lingkar pinggul 98 cm.',
-      sizeLabel: '30', lengthCm: 98,
-      defects: 'Warna sedikit memudar pada bagian lutut akibat pemakaian. Tidak ditemukan lubang atau jahitan yang terlepas.',
+      imageAssets: [
+        'assets/images/JHL1.jpg',
+        'assets/images/JHL2.jpg',
+        'assets/images/JHL3.jpg',
+        'assets/images/JHL4.jpg',
+      ],
+      description: 'Celana jeans JHL berwarna biru muda dengan model wide leg dan detail saku tempel pada bagian depan. Ukuran XL dengan lingkar pinggang 84 cm.',
+      sizeLabel: 'XL', waistCm: 84, lengthCm: 100,
+      defects: 'Terdapat benang yang terlepas dan sedikit kerusakan jahitan pada bagian ujung celana.',
     ),
     const ProductItem(
       name: 'Knit Sweater',
@@ -54,36 +65,48 @@ class ProductStore {
       description: 'Sweater rajut dengan tekstur lembut dan desain minimalis. Cocok digunakan untuk aktivitas santai maupun kegiatan sehari-hari.',
       sizeLabel: 'M', chestCm: 100, lengthCm: 61,
       shoulderCm: 41, sleeveCm: 58,
-      defects: 'Tidak ditemukan noda, lubang, jahitan rusak, maupun perubahan warna. Kondisi pakaian masih sangat terawat.',
+      defects: 'Tidak ditemukan noda, lubang, jahitan rusak, maupun warna memudar.',
     ),
     const ProductItem(
-      name: 'Hoodie',
-      price: 'Rp50.000',
-      condition: 'Kondisi cukup baik',
-      imageAsset: 'assets/images/hoodie.jpg',
-      description: 'Hoodie kasual dengan bahan yang nyaman digunakan. Memiliki desain simpel dan cocok untuk kegiatan sehari-hari.',
-      sizeLabel: 'L', chestCm: 110, lengthCm: 68,
-      shoulderCm: 47, sleeveCm: 62,
-      defects: 'Terdapat sedikit bulu halus pada permukaan bahan akibat pemakaian. Tidak ditemukan lubang atau kerusakan jahitan.',
-    ),
-    const ProductItem(
-      name: 'Rok Floral',
-      price: 'Rp35.000',
-      condition: 'Kondisi seperti baru',
-      imageAsset: 'assets/images/rok.jpg',
-      description: 'Rok floral dengan motif bunga yang memberikan tampilan feminin. Ukuran label M, lingkar pinggang sekitar 72 cm dan lingkar pinggul 98 cm.',
-      sizeLabel: 'M', lengthCm: 76,
-      defects: 'Tidak ditemukan noda, lubang, jahitan rusak, maupun warna memudar. Produk masih dalam kondisi terawat.',
-    ),
-    const ProductItem(
-      name: 'Outer',
-      price: 'Rp38.000',
+      name: 'Adidas Pink Jacket',
+      price: 'Rp125.000',
       condition: 'Kondisi sangat baik',
-      imageAsset: 'assets/images/outer.jpg',
-      description: 'Outer wanita bermotif polkadot dengan detail kancing depan dan saku. Memiliki desain menarik serta nyaman digunakan untuk aktivitas sehari-hari.',
-      sizeLabel: 'M', chestCm: 96, lengthCm: 62,
-      shoulderCm: 39, sleeveCm: 56,
-      defects: 'Tidak ditemukan noda, lubang, jahitan rusak, maupun warna memudar. Pakaian masih terawat dengan baik.',
+      imageAssets: [
+        'assets/images/jacket_adidas1.jpg',
+        'assets/images/jacket_adidas2.jpg',
+        'assets/images/jacket_adidas3.jpg',
+        'assets/images/jacket_adidas4.jpg',
+      ],
+      description: 'Jaket Adidas berwarna pink dengan desain sporty, motif grafis pada bagian depan, dan detail tiga garis putih pada lengan.',
+      sizeLabel: 'All Size', chestCm: 104, lengthCm: 62,
+      shoulderCm: 44, sleeveCm: 58,
+      defects: 'Tidak ditemukan noda, lubang, jahitan rusak, maupun warna memudar.',
+    ),
+    const ProductItem(
+      name: 'Blue Pattern Baggy Jeans',
+      price: 'Rp95.000',
+      condition: 'Kondisi cukup baik',
+      imageAssets: [
+        'assets/images/baggy_jeans1.jpg',
+        'assets/images/baggy_jeans2.jpg',
+        'assets/images/baggy_jeans3.jpg',
+      ],
+      description: 'Celana jeans biru dengan motif abstrak dan model baggy yang memberikan tampilan kasual. Ukuran XL dengan lingkar pinggang 84 cm.',
+      sizeLabel: 'XL', waistCm: 84, lengthCm: 100,
+      defects: 'Terdapat sedikit kerusakan pada bagian jahitan ujung celana.',
+    ),
+    const ProductItem(
+      name: 'Houndstooth Vest',
+      price: 'Rp75.000',
+      condition: 'Kondisi seperti baru',
+      imageAssets: [
+        'assets/images/vest1.jpg',
+        'assets/images/vest2.jpg',
+        'assets/images/vest3.jpg',
+      ],
+      description: 'Rompi wanita bermotif houndstooth hitam putih dengan kerah V, kancing depan, dan detail saku pada bagian depan.',
+      sizeLabel: 'M', chestCm: 92, lengthCm: 48,
+      defects: 'Tidak ditemukan noda, lubang, jahitan rusak, maupun warna memudar.',
     ),
     const ProductItem(
       name: 'Floral Embroidery Knit Cardigan',
@@ -97,7 +120,7 @@ class ProductStore {
       description: 'Cardigan rajut wanita berwarna cream dengan detail bordir bunga berwarna pink dan kuning yang memberikan kesan manis dan feminin. Memiliki model kancing depan, lengan panjang, serta bahan rajut yang nyaman digunakan.',
       sizeLabel: 'M', chestCm: 100, lengthCm: 55,
       shoulderCm: 40, sleeveCm: 55,
-      defects: 'Terdapat sedikit tanda pemakaian pada bagian rajutan, tetapi tidak memengaruhi fungsi dan kenyamanan pakaian.',
+      defects: 'Terdapat sedikit tanda pemakaian pada bagian rajutan.',
     ),
     const ProductItem(
       name: 'Amora Button Blouse',
@@ -113,7 +136,22 @@ class ProductStore {
       description: 'Kemeja wanita lengan panjang dengan motif bunga bernuansa pastel pink dan cream yang memberikan kesan vintage dan feminin. Memiliki detail kancing depan, kerah sederhana, serta potongan yang nyaman digunakan.',
       sizeLabel: 'M', chestCm: 96, lengthCm: 65,
       shoulderCm: 38, sleeveCm: 56,
-      defects: 'Terdapat sedikit kerutan pada kain akibat penyimpanan dan pemakaian, tetapi tidak memengaruhi fungsi pakaian.',
+      defects: 'Terdapat sedikit kerutan pada kain akibat penyimpanan dan pemakaian.',
+    ),
+    const ProductItem(
+      name: 'Stussy x Dickies Jacket',
+      price: 'Rp250.000',
+      condition: 'Kondisi cukup baik',
+      imageAssets: [
+        'assets/images/stussy_dickies1.jpg',
+        'assets/images/stussy_dickies2.jpg',
+        'assets/images/stussy_dickies3.jpg',
+        'assets/images/stussy_dickies4.jpg',
+      ],
+      description: 'Jaket Stussy x Dickies berwarna hitam dengan desain workwear, resleting depan, dua saku samping, dan detail jahitan putih.',
+      sizeLabel: 'L', chestCm: 108, lengthCm: 66,
+      shoulderCm: 46, sleeveCm: 61,
+      defects: 'Terdapat noda tinta pada bagian merk.',
     ),
   ]);
 

@@ -1,4 +1,3 @@
-
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import '../store/cart_store.dart';
@@ -7,6 +6,7 @@ import '../store/chat_store.dart';
 import 'cart_page.dart';
 import 'checkout_page.dart';
 import 'chat_detail_page.dart';
+import 'fit_match_page.dart';
 
 class ProductDetailPage extends StatelessWidget {
   final String name, price, condition, imageUrl;
@@ -71,14 +71,31 @@ class ProductDetailPage extends StatelessWidget {
 
   // Tambah Keranjang
   void addCart(BuildContext context) {
-    CartStore.add(name, price, imageUrl, 
-        imageBytes: imageBytes, imageAsset: imageAsset, 
+    CartStore.add(name, price, imageUrl,
+        imageBytes: imageBytes, imageAsset: imageAsset,
         imageAssets: imageAssets);
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('Produk berhasil ditambahkan ke keranjang'),
         behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
+
+  // TAMBAHAN: Membuka halaman FitMatch
+  void openFitMatch(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => FitMatchPage(
+          productName: name,
+          sizeLabel: sizeLabel,
+          chestCm: chestCm,
+          lengthCm: lengthCm,
+          shoulderCm: shoulderCm,
+          sleeveCm: sleeveCm,
+        ),
       ),
     );
   }
@@ -252,6 +269,32 @@ class ProductDetailPage extends StatelessWidget {
           ),
 
           const SizedBox(height: 16),
+
+          // TAMBAHAN: Tombol FitMatch
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: () => openFitMatch(context),
+              icon: const Icon(Icons.straighten_rounded),
+              label: const Text('Cek Kecocokan Ukuran (FitMatch)'),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: const Color(0xFF89AC46),
+                side: const BorderSide(color: Color(0xFF89AC46)),
+                padding: const EdgeInsets.symmetric(vertical: 14),
+              ),
+            ),
+          ),
+          if (!hasMeasurement)
+            const Padding(
+              padding: EdgeInsets.only(top: 8),
+              child: Text(
+                'Ukuran aktual produk belum dicantumkan. '
+                'Hasil perbandingan mungkin terbatas.',
+                style: TextStyle(fontSize: 12, color: Colors.black54),
+              ),
+            ),
+
+          const SizedBox(height: 20),
 
           // PreloCheck
           Container(
