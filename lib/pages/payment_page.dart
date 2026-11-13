@@ -15,7 +15,7 @@ class PaymentPage extends StatelessWidget {
       orderStatus: 'Menunggu diproses',
     );
 
-    if (order['fromCart'] == true) CartStore.clear();
+    if (order['fromCart'] == true) CartStore.removeSelected();
 
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(isCod

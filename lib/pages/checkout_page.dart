@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import '../store/cart_store.dart';
 import '../store/order_store.dart';
@@ -8,8 +9,10 @@ class CheckoutPage extends StatefulWidget {
   final bool fromCart;
 
   const CheckoutPage({
-    super.key, required this.productName,
-    required this.productPrice, this.fromCart = false,
+    super.key,
+    required this.productName,
+    required this.productPrice,
+    this.fromCart = false,
   });
 
   @override
@@ -102,9 +105,16 @@ class _CheckoutPageState extends State<CheckoutPage> {
     }
 
     final cartItems = CartStore.items.value
+        .where((item) => item['selected'] == true)
         .map((item) => Map<String, dynamic>.from(item)).toList();
 
-    final items = widget.fromCart && cartItems.isNotEmpty
+    if (widget.fromCart && cartItems.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Pilih produk yang ingin dibeli terlebih dahulu.')));
+      return;
+    }
+
+    final items = widget.fromCart
         ? cartItems
         : [
             {
@@ -123,8 +133,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
       fromCart: widget.fromCart,
     );
 
-    if (widget.fromCart) CartStore.clear();
-
     Navigator.pushReplacement(context,
       MaterialPageRoute(builder: (_) =>
         PaymentPage(orderId: orderId)));
@@ -137,8 +145,10 @@ class _PaymentTile extends StatelessWidget {
   final ValueChanged<String?> onChanged;
 
   const _PaymentTile({
-    required this.title, required this.value,
-    required this.groupValue, required this.icon,
+    required this.title,
+    required this.value,
+    required this.groupValue,
+    required this.icon,
     required this.onChanged,
   });
 
@@ -148,8 +158,10 @@ class _PaymentTile extends StatelessWidget {
     decoration: BoxDecoration(color: Colors.white,
       borderRadius: BorderRadius.circular(16)),
     child: RadioListTile<String>(
-      value: value, groupValue: groupValue,
-      onChanged: onChanged, title: Text(title),
+      value: value,
+      groupValue: groupValue,
+      onChanged: onChanged,
+      title: Text(title),
       secondary: Icon(icon, color: const Color(0xFF89AC46)),
     ),
   );
