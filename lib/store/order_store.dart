@@ -45,7 +45,7 @@ class OrderStore {
     ],
 
     'Knit Sweater': [
-      _sample('Salsa', 2, 'Sweater lembut dan masih terawat.', 15),
+      _sample('Salsa', 5, 'Sweater lembut dan masih terawat.', 15),
       _sample('Aulia', 5, 'Warna sesuai foto dan nyaman dipakai.', 8),
       _sample('Rani', 4, 'Kualitas bagus dan jahitan rapi.', 2),
     ],
