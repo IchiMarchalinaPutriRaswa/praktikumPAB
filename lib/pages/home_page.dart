@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'catalog_page.dart';
 import 'product_detail_page.dart';
