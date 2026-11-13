@@ -57,7 +57,7 @@ class OrderHistoryPage extends StatelessWidget {
               const Text('Pilih alasan pengembalian barang:'),
               const SizedBox(height: 10),
               DropdownButtonFormField<String>(
-                value: reason, isExpanded: true,
+                initialValue: reason, isExpanded: true,
                 decoration: const InputDecoration(border: OutlineInputBorder(), hintText: 'Pilih alasan retur'),
                 items: reasons.map((r) => DropdownMenuItem(value: r, child: Text(r, style: const TextStyle(fontSize: 13)))).toList(),
                 onChanged: (v) => setDialogState(() => reason = v),

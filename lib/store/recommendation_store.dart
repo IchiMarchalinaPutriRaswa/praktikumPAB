@@ -9,7 +9,7 @@ class RecommendationStore {
 
     final products = ProductStore.items.value;
     final favorites = FavoriteStore.favorites.value;
-    final ratings = OrderStore.ratings.value;
+    final ratings = OrderStore.userRatings.value;
     final purchased = <String>{};
 
     for (final order in OrderStore.orders.value) {
@@ -27,41 +27,38 @@ class RecommendationStore {
         .where((e) => e.value.isNotEmpty)
         .map((e) => e.key).toSet();
 
-    final hasFit = FitMatchStore.measurements.isNotEmpty ||
-        FitMatchStore.bodyMeasurements.isNotEmpty;
+    final topFit = FitMatchStore.getMeasurements('atasan');
+    final bottomFit = FitMatchStore.getMeasurements('bawahan');
+
+    final fitCategories = <String>{
+      if (topFit.isNotEmpty) 'atasan',
+      if (bottomFit.isNotEmpty) 'bawahan',
+    };
 
     if (favorites.isEmpty && purchased.isEmpty &&
-        rated.isEmpty && !hasFit) return [];
+        rated.isEmpty && fitCategories.isEmpty) return [];
 
     final categoryScores = <String, int>{};
 
-    ProductItem? findProduct(String name) {
-      for (final p in products) {
-        if (p.name == name) return p;
-      }
-      return null;
-    }
-
     void addScore(String name, int points) {
-      final p = findProduct(name);
-      if (p == null) return;
-      final category = _category(p);
-      if (category == 'lainnya') return;
-      categoryScores[category] =
-          (categoryScores[category] ?? 0) + points;
+      for (final p in products) {
+        if (p.name != name) continue;
+        final category = _category(p);
+        if (category == 'lainnya') return;
+        categoryScores[category] =
+            (categoryScores[category] ?? 0) + points;
+        return;
+      }
     }
 
-    // 1. Preferensi dari favorit
     for (final name in favorites) {
       addScore(name, 30);
     }
 
-    // 2. Preferensi dari riwayat pembelian
     for (final name in purchased) {
       addScore(name, 25);
     }
 
-    // 3. Preferensi dari rating
     for (final entry in ratings.entries) {
       if (entry.value.isEmpty) continue;
       final avg = entry.value.reduce((a, b) => a + b) /
@@ -69,36 +66,39 @@ class RecommendationStore {
       addScore(entry.key, avg >= 4 ? 20 : avg >= 3 ? 8 : -15);
     }
 
-    // Menghindari produk yang sudah pernah dipilih pengguna
-    var candidates = products.where((p) =>
-        !favorites.contains(p.name) &&
-        !purchased.contains(p.name) &&
-        !rated.contains(p.name)).toList();
-
-    // 4. Menentukan kategori yang disukai
-    final preferredCategories = categoryScores.entries
+    final interactionCategories = categoryScores.entries
         .where((e) => e.value > 0)
         .map((e) => e.key).toSet();
 
-    if (preferredCategories.isNotEmpty) {
-      candidates = candidates.where((p) =>
-          preferredCategories.contains(_category(p))).toList();
-    } else if (hasFit) {
-      candidates = candidates.where(_hasFitData).toList();
-    } else {
-      return [];
-    }
+    final preferredCategories = {
+      ...interactionCategories,
+      ...fitCategories,
+    };
 
-    // Hanya menampilkan produk dengan skor positif
+    if (preferredCategories.isEmpty) return [];
+
+    var candidates = products.where((p) {
+      if (favorites.contains(p.name) ||
+          purchased.contains(p.name) ||
+          rated.contains(p.name)) return false;
+
+      final category = _category(p);
+      if (!preferredCategories.contains(category)) return false;
+
+      if (fitCategories.contains(category) &&
+          !interactionCategories.contains(category) &&
+          !_hasFitData(p)) return false;
+
+      return true;
+    }).toList();
+
     candidates = candidates.where((p) =>
         _score(p, categoryScores) > 0).toList();
 
-    if (candidates.isEmpty) return [];
-
-    // Mengurutkan berdasarkan skor tertinggi
     candidates.sort((a, b) =>
         _score(b, categoryScores).compareTo(
-            _score(a, categoryScores)));
+          _score(a, categoryScores),
+        ));
 
     return candidates.take(limit).toList();
   }
@@ -109,83 +109,69 @@ class RecommendationStore {
     if (_has(text, ['jeans', 'celana', 'rok', 'skirt', 'pants'])) {
       return 'bawahan';
     }
-    if (_has(text, ['jacket', 'hoodie', 'cardigan',
-        'outer', 'jaket', 'blazer'])) {
-      return 'outerwear';
-    }
-    if (_has(text, ['sweater', 'blouse', 'shirt',
-        'kemeja', 'kaos', 'knit'])) {
-      return 'atasan';
-    }
-    if (_has(text, ['dress', 'gaun'])) return 'dress';
+
+    if (_has(text, [
+      'jacket', 'hoodie', 'cardigan', 'outer',
+      'jaket', 'blazer', 'vest', 'sweater',
+      'blouse', 'shirt', 'kemeja', 'kaos',
+      'knit', 'dress', 'gaun',
+    ])) return 'atasan';
+
     return 'lainnya';
   }
 
   static bool _has(String text, List<String> words) =>
       words.any((word) => text.contains(word));
 
+  static Map<String, double?> _productSizes(ProductItem p) =>
+      _category(p) == 'bawahan'
+          ? {'waist': p.waistCm, 'length': p.lengthCm}
+          : {
+              'chest': p.chestCm,
+              'length': p.lengthCm,
+              'shoulder': p.shoulderCm,
+              'sleeve': p.sleeveCm,
+            };
+
   static bool _hasFitData(ProductItem p) {
-    final sizes = {
-      'chest': p.chestCm, 'length': p.lengthCm,
-      'shoulder': p.shoulderCm, 'sleeve': p.sleeveCm,
-    };
-    final keys = {
-      ...FitMatchStore.measurements.keys,
-      ...FitMatchStore.bodyMeasurements.keys,
-    };
-    return keys.any((key) => sizes[key] != null);
+    final values = FitMatchStore.getMeasurements(_category(p));
+    final sizes = _productSizes(p);
+    return values.keys.any((key) => sizes[key] != null);
   }
 
-  static int _score(ProductItem p, Map<String, int> categories) {
-    return (categories[_category(p)] ?? 0) + _fitScore(p);
-  }
+  static int _score(ProductItem p, Map<String, int> categories) =>
+      (categories[_category(p)] ?? 0) + _fitScore(p);
 
   static int _fitScore(ProductItem p) {
-    final scores = <double>[];
+    final values = FitMatchStore.getMeasurements(_category(p));
+    if (values.isEmpty) return 0;
 
-    if (FitMatchStore.measurements.isNotEmpty) {
-      scores.add(_compare(p, FitMatchStore.measurements, false));
-    }
-    if (FitMatchStore.bodyMeasurements.isNotEmpty) {
-      scores.add(_compare(p, FitMatchStore.bodyMeasurements, true));
-    }
-
-    if (scores.isEmpty) return 0;
-    return (scores.reduce((a, b) => a + b) / scores.length).round();
-  }
-
-  static double _compare(ProductItem p, Map<String, double> values,
-      bool bodyMode) {
-    final sizes = {
-      'chest': p.chestCm, 'length': p.lengthCm,
-      'shoulder': p.shoulderCm, 'sleeve': p.sleeveCm,
-    };
-    const limits = {
-      'chest': 4.0, 'length': 3.0,
-      'shoulder': 2.0, 'sleeve': 3.0,
-    };
+    final sizes = _productSizes(p);
+    final limits = _category(p) == 'bawahan'
+        ? {'waist': 3.0, 'length': 3.0}
+        : {
+            'chest': 4.0, 'length': 3.0,
+            'shoulder': 2.0, 'sleeve': 3.0,
+          };
 
     double matched = 0;
     int count = 0;
 
     values.forEach((key, user) {
-      final size = sizes[key];
-      if (size == null) return;
-      count++;
-      final diff = size - user;
+      final product = sizes[key];
+      if (product == null) return;
 
-      if (!bodyMode) {
-        if (diff.abs() <= limits[key]!) matched++;
-        else if (diff.abs() <= limits[key]! * 2) matched += 0.5;
-      } else if (key == 'chest') {
-        if (diff >= 4 && diff <= 12) matched++;
-        else if (diff >= 0 && diff <= 16) matched += 0.5;
-      } else {
-        if (diff >= -2 && diff <= 4) matched++;
-        else if (diff >= -4 && diff <= 6) matched += 0.5;
+      count++;
+      final diff = (product - user).abs();
+      final limit = limits[key]!;
+
+      if (diff <= limit) {
+        matched++;
+      } else if (diff <= limit * 2) {
+        matched += 0.5;
       }
     });
 
-    return count == 0 ? 0 : matched / count * 25;
+    return count == 0 ? 0 : (matched / count * 25).round();
   }
 }
