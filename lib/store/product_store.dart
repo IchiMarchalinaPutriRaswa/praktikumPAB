@@ -2,10 +2,11 @@ import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 
 class ProductItem {
-  final String name, price, condition, imageUrl, category;
+  final String name, price, condition, imageUrl;
   final String? imageAsset;
   final List<String> imageAssets;
   final List<Uint8List> images;
+  final String category;
   final String sizeLabel, defects, description;
   final double? chestCm, lengthCm, shoulderCm, sleeveCm;
   final double? waistCm; // TAMBAHAN FITMATCH

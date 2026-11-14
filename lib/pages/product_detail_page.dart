@@ -14,6 +14,7 @@ class ProductDetailPage extends StatelessWidget {
   final Uint8List? imageBytes;
   final List<Uint8List> images;
   final List<String> imageAssets;
+  final String category;
   final String sizeLabel, defects, description;
   final double? chestCm, lengthCm, shoulderCm, sleeveCm;
   final double? waistCm, hipCm, thighCm;
@@ -23,6 +24,7 @@ class ProductDetailPage extends StatelessWidget {
     required this.condition, required this.imageUrl,
     this.imageAsset, this.imageBytes,
     this.images = const [], this.imageAssets = const [],
+    this.category = '',
     this.sizeLabel = '-', this.chestCm, this.lengthCm,
     this.shoulderCm, this.sleeveCm,
     this.waistCm, this.hipCm, this.thighCm,
@@ -32,9 +34,16 @@ class ProductDetailPage extends StatelessWidget {
 
   // Mendeteksi kategori produk
   bool get isBottom {
+    final type = category.trim().toLowerCase();
+    if (['celana', 'rok', 'bawahan'].contains(type)) {
+      return true;
+    }
+    if (type.isNotEmpty) return false;
     final text = '$name $description'.toLowerCase();
-    return ['bawahan', 'celana', 'jeans', 'pants',
-      'trouser', 'rok', 'skirt'].any(text.contains);
+    return [
+      'celana', 'jeans', 'pants', 'trouser',
+      'rok', 'skirt', 'shorts',
+    ].any(text.contains);
   }
 
   // Mengambil lingkar pinggang dari deskripsi jika data belum tersedia

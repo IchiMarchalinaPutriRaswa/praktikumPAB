@@ -103,32 +103,33 @@ class RecommendationStore {
   }
 
   static String _category(ProductItem p) {
-    final explicit = p.category.toLowerCase().trim();
+    final category = p.category.trim().toLowerCase();
 
-    if (['celana', 'rok', 'bawahan'].contains(explicit)) {
+    if (['celana', 'rok', 'bawahan'].contains(category)) {
       return 'bawahan';
     }
-    if (['atasan', 'outerwear', 'dress'].contains(explicit)) {
+
+    if (['atasan', 'outerwear', 'dress'].contains(category)) {
       return 'atasan';
     }
-
-    if (p.waistCm != null) return 'bawahan';
-    if (p.chestCm != null || p.shoulderCm != null ||
-        p.sleeveCm != null) return 'atasan';
 
     final text = '${p.name} ${p.description}'.toLowerCase();
 
     if (_has(text, [
-      'jeans', 'celana', 'rok', 'skirt', 'pants',
-      'trousers', 'shorts',
-    ])) return 'bawahan';
+      'jeans', 'celana', 'rok', 'skirt',
+      'pants', 'trouser', 'shorts',
+    ])) {
+      return 'bawahan';
+    }
 
     if (_has(text, [
       'jacket', 'hoodie', 'cardigan', 'outer',
       'jaket', 'blazer', 'vest', 'sweater',
       'blouse', 'shirt', 'kemeja', 'kaos',
       'knit', 'dress', 'gaun',
-    ])) return 'atasan';
+    ])) {
+      return 'atasan';
+    }
 
     return 'lainnya';
   }

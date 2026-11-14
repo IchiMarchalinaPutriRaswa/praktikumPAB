@@ -37,9 +37,11 @@ class _HomePageState extends State<HomePage> {
         imageUrl: p.imageUrl, imageAsset: p.imageAsset,
         imageBytes: p.imageBytes, images: p.images,
         imageAssets: p.imageAssets,
+        category: p.category,
         description: p.description, sizeLabel: p.sizeLabel,
         chestCm: p.chestCm, lengthCm: p.lengthCm,
         shoulderCm: p.shoulderCm, sleeveCm: p.sleeveCm,
+        waistCm: p.waistCm,
         defects: p.defects,
       )));
 

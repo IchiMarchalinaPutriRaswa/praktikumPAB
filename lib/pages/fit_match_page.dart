@@ -7,12 +7,10 @@ class FitMatchPage extends StatefulWidget {
   final double? waistCm, hipCm, thighCm;
 
   const FitMatchPage({
-    super.key,
-    required this.productName,
-    required this.sizeLabel,
-    this.category = '',
-    this.chestCm, this.lengthCm, this.shoulderCm,
-    this.sleeveCm, this.waistCm, this.hipCm, this.thighCm,
+    super.key, required this.productName, required this.sizeLabel,
+    this.category = '', this.chestCm, this.lengthCm,
+    this.shoulderCm, this.sleeveCm, this.waistCm,
+    this.hipCm, this.thighCm,
   });
 
   @override
@@ -26,14 +24,20 @@ class _FitMatchPageState extends State<FitMatchPage> {
 
   bool get isBottom {
     final text = '${widget.category} ${widget.productName}'.toLowerCase();
-    return ['bawahan', 'celana', 'jeans', 'pants', 'rok', 'skirt']
-        .any((word) => text.contains(word));
+    return [
+      'bawahan', 'celana', 'jeans', 'pants',
+      'rok', 'skirt', 'trousers', 'shorts',
+    ].any((word) => text.contains(word));
   }
 
-  String get fitCategory => isBottom ? 'bawahan' : 'atasan';
+  String get fitCategory =>
+    isBottom ? 'bawahan' : 'atasan';
 
   Map<String, String> get labels => isBottom
-      ? {'waist': 'Lingkar Pinggang', 'length': 'Panjang Celana'}
+      ? {
+          'waist': 'Lingkar Pinggang',
+          'length': 'Panjang Celana',
+        }
       : {
           'chest': 'Lingkar Dada',
           'length': 'Panjang Pakaian',
@@ -42,7 +46,10 @@ class _FitMatchPageState extends State<FitMatchPage> {
         };
 
   Map<String, double?> get productSizes => isBottom
-      ? {'waist': widget.waistCm, 'length': widget.lengthCm}
+      ? {
+          'waist': widget.waistCm,
+          'length': widget.lengthCm,
+        }
       : {
           'chest': widget.chestCm,
           'length': widget.lengthCm,
@@ -57,7 +64,6 @@ class _FitMatchPageState extends State<FitMatchPage> {
           'shoulder': 2.0, 'sleeve': 3.0,
         };
 
-  // Input selalu kosong setiap halaman FitMatch dibuka.
   @override
   void initState() {
     super.initState();
@@ -80,13 +86,16 @@ class _FitMatchPageState extends State<FitMatchPage> {
 
     for (final e in fields.entries) {
       if (e.value.text.trim().isEmpty) continue;
+
       final value = double.tryParse(
         e.value.text.trim().replaceAll(',', '.'),
       );
 
       if (value == null || value <= 0) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Periksa ukuran yang dimasukkan.')),
+          const SnackBar(
+            content: Text('Periksa ukuran yang dimasukkan.'),
+          ),
         );
         return;
       }
@@ -100,7 +109,7 @@ class _FitMatchPageState extends State<FitMatchPage> {
       return;
     }
 
-    // Data tetap disimpan untuk kebutuhan rekomendasi.
+    // Simpan ukuran berdasarkan kategori untuk rekomendasi personal.
     FitMatchStore.saveForCategory(fitCategory, input);
 
     final rows = <Map<String, dynamic>>[];
@@ -146,7 +155,9 @@ class _FitMatchPageState extends State<FitMatchPage> {
       padding: const EdgeInsets.all(16),
       children: [
         Text(
-          isBottom ? 'Cocokkan Ukuran Celana' : 'Cocokkan Ukuran Baju',
+          isBottom
+              ? 'Cocokkan Ukuran Celana'
+              : 'Cocokkan Ukuran Baju',
           style: const TextStyle(
             fontSize: 22, fontWeight: FontWeight.bold,
           ),
@@ -156,13 +167,13 @@ class _FitMatchPageState extends State<FitMatchPage> {
           'Masukkan ukuran pakaian sejenis yang paling nyaman kamu gunakan.',
         ),
         const SizedBox(height: 16),
-
-        Card(child: ListTile(
-          title: Text(widget.productName),
-          subtitle: Text('Ukuran produk: ${widget.sizeLabel}'),
-        )),
+        Card(
+          child: ListTile(
+            title: Text(widget.productName),
+            subtitle: Text('Ukuran produk: ${widget.sizeLabel}'),
+          ),
+        ),
         const SizedBox(height: 16),
-
         ...fields.entries.map((e) => Padding(
           padding: const EdgeInsets.only(bottom: 12),
           child: TextField(
@@ -177,51 +188,53 @@ class _FitMatchPageState extends State<FitMatchPage> {
             ),
           ),
         )),
-
         ElevatedButton.icon(
           onPressed: calculate,
           icon: const Icon(Icons.compare_arrows),
           label: const Text('Cocokkan Ukuran'),
         ),
-
         if (result != null) ...[
           const SizedBox(height: 20),
-          Card(child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(result!, style: const TextStyle(
-                  fontSize: 18, fontWeight: FontWeight.bold,
-                )),
-                const Divider(),
-                if (comparisons.isEmpty)
-                  const Text('Belum ada ukuran yang dapat dibandingkan.')
-                else
-                  ...comparisons.map((r) => ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(r['label']),
-                    subtitle: Text(
-                      'Kamu: ${r['user']} cm | Produk: ${r['product']} cm',
-                    ),
-                    trailing: Text(
-                      '${r['status']}\n${r['diff']} cm',
-                      textAlign: TextAlign.end,
-                      style: TextStyle(
-                        fontSize: 11,
-                        color: r['status'] == 'Sesuai'
-                            ? Colors.green
-                            : r['status'] == 'Mendekati'
-                                ? Colors.orange
-                                : Colors.red,
-                      ),
-                    ),
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(result!, style: const TextStyle(
+                    fontSize: 18, fontWeight: FontWeight.bold,
                   )),
-              ],
+                  const Divider(),
+                  if (comparisons.isEmpty)
+                    const Text(
+                      'Belum ada ukuran yang dapat dibandingkan.',
+                    )
+                  else
+                    ...comparisons.map((r) => ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(r['label']),
+                      subtitle: Text(
+                        'Kamu: ${r['user']} cm | '
+                        'Produk: ${r['product']} cm',
+                      ),
+                      trailing: Text(
+                        '${r['status']}\n${r['diff']} cm',
+                        textAlign: TextAlign.end,
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: r['status'] == 'Sesuai'
+                              ? Colors.green
+                              : r['status'] == 'Mendekati'
+                                  ? Colors.orange
+                                  : Colors.red,
+                        ),
+                      ),
+                    )),
+                ],
+              ),
             ),
-          )),
+          ),
         ],
-
         const SizedBox(height: 16),
         const Text(
           'Hasil merupakan estimasi berdasarkan perbandingan ukuran, '
