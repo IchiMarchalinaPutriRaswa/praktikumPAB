@@ -128,7 +128,7 @@ class _HomeContent extends StatelessWidget {
               animation: Listenable.merge([
                 FavoriteStore.favorites,
                 OrderStore.orders,
-                OrderStore.ratings,
+                OrderStore.userRatings,
                 FitMatchStore.revision,
               ]),
               builder: (context, _) {
