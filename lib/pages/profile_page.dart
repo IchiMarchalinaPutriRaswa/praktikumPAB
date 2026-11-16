@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'order_history_page.dart';
 import 'favorite_page.dart';
+import 'seller_order_page.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -20,7 +21,8 @@ class ProfilePage extends StatelessWidget {
             color: const Color(0xFFE5EEE9),
             borderRadius: BorderRadius.circular(22)),
           child: const Column(children: [
-            CircleAvatar(radius: 38, backgroundColor: Colors.white,
+            CircleAvatar(radius: 38,
+              backgroundColor: Colors.white,
               child: Icon(Icons.person, size: 42,
                 color: Color(0xFF89AC46))),
             SizedBox(height: 12),
@@ -33,6 +35,11 @@ class ProfilePage extends StatelessWidget {
           ]),
         ),
         const SizedBox(height: 20),
+
+        const Text('Aktivitas Pembeli',
+          style: TextStyle(fontSize: 18,
+            fontWeight: FontWeight.w800)),
+        const SizedBox(height: 12),
 
         // Menu Favorit
         _MenuTile(
@@ -54,11 +61,28 @@ class ProfilePage extends StatelessWidget {
               builder: (_) => const OrderHistoryPage())),
         ),
 
+        const SizedBox(height: 12),
+        const Text('Aktivitas Penjual',
+          style: TextStyle(fontSize: 18,
+            fontWeight: FontWeight.w800)),
+        const SizedBox(height: 12),
+
+        // Menu Pesanan Masuk
+        _MenuTile(
+          icon: Icons.inventory_2_outlined,
+          title: 'Pesanan Masuk',
+          subtitle: 'Kelola pesanan dan pengiriman pembeli',
+          onTap: () => Navigator.push(context,
+            MaterialPageRoute(
+              builder: (_) => const SellerOrderPage())),
+        ),
+
         const SizedBox(height: 20),
         const Text('Informasi Pribadi',
           style: TextStyle(fontSize: 18,
             fontWeight: FontWeight.w800)),
         const SizedBox(height: 12),
+
         const _BiodataTile(
           icon: Icons.person_outline,
           title: 'Nama Lengkap',
@@ -82,8 +106,10 @@ class _MenuTile extends StatelessWidget {
   final VoidCallback onTap;
 
   const _MenuTile({
-    required this.icon, required this.title,
-    required this.subtitle, required this.onTap,
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.onTap,
   });
 
   @override
@@ -108,7 +134,9 @@ class _BiodataTile extends StatelessWidget {
   final String title, value;
 
   const _BiodataTile({
-    required this.icon, required this.title, required this.value,
+    required this.icon,
+    required this.title,
+    required this.value,
   });
 
   @override
