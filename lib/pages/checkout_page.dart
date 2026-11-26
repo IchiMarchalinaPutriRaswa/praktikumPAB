@@ -21,7 +21,13 @@ class CheckoutPage extends StatefulWidget {
 class _CheckoutPageState extends State<CheckoutPage> {
   final nameController = TextEditingController();
   final addressController = TextEditingController();
-  String payment = 'Transfer bank';
+
+  static const green = Color(0xFF89AC46);
+  static const paleGreen = Color(0xFFE5EEE9);
+
+  String paymentMethod = 'Virtual Account';
+  String selectedBank = 'BCA';
+  String selectedWallet = 'DANA';
 
   @override
   void dispose() {
@@ -30,98 +36,158 @@ class _CheckoutPageState extends State<CheckoutPage> {
     super.dispose();
   }
 
+  Widget optionChip(String label, bool selected,
+      VoidCallback onTap) => ChoiceChip(
+    label: Text(label),
+    selected: selected,
+    showCheckmark: false,
+    onSelected: (_) => setState(onTap),
+    selectedColor: paleGreen,
+    backgroundColor: Colors.white,
+    side: BorderSide(
+      color: selected ? green : const Color(0xFFD8E3DD),
+      width: selected ? 2 : 1,
+    ),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(14)),
+    labelStyle: TextStyle(
+      fontWeight: FontWeight.w700,
+      color: selected ? green : Colors.black87,
+    ),
+    padding: const EdgeInsets.symmetric(
+      horizontal: 12, vertical: 10),
+  );
+
+  Widget sectionLabel(String title) => Padding(
+    padding: const EdgeInsets.only(bottom: 10),
+    child: Text(title, style: const TextStyle(
+      fontSize: 17, fontWeight: FontWeight.w800)),
+  );
+
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(title: const Text('Checkout',
       style: TextStyle(fontWeight: FontWeight.w800))),
-    body: ListView(padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
+    body: ListView(padding: const EdgeInsets.all(16),
       children: [
-        const Text('Informasi Pengiriman',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
-        const SizedBox(height: 12),
+        sectionLabel('Informasi Pengiriman'),
         TextField(controller: nameController,
-          decoration: const InputDecoration(labelText: 'Nama penerima')),
+          decoration: const InputDecoration(
+            labelText: 'Nama penerima')),
         const SizedBox(height: 12),
-        TextField(controller: addressController, maxLines: 3,
-          decoration: const InputDecoration(labelText: 'Alamat lengkap')),
-        const SizedBox(height: 22),
-        const Text('Metode Pembayaran',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
-        const SizedBox(height: 8),
-        _PaymentTile(title: 'Transfer bank',
-          icon: Icons.account_balance_outlined, value: 'Transfer bank',
-          groupValue: payment,
-          onChanged: (v) => setState(() => payment = v!)),
-        _PaymentTile(title: 'E-Wallet',
-          icon: Icons.account_balance_wallet_outlined, value: 'E-Wallet',
-          groupValue: payment,
-          onChanged: (v) => setState(() => payment = v!)),
-        _PaymentTile(title: 'Virtual Account',
-          icon: Icons.receipt_long_outlined, value: 'Virtual Account',
-          groupValue: payment,
-          onChanged: (v) => setState(() => payment = v!)),
-        _PaymentTile(title: 'Bayar di tempat (COD)',
-          icon: Icons.local_shipping_outlined, value: 'COD',
-          groupValue: payment,
-          onChanged: (v) => setState(() => payment = v!)),
-        const SizedBox(height: 14),
-        Container(padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(color: Colors.white,
-            borderRadius: BorderRadius.circular(18)),
+        TextField(controller: addressController,
+          maxLines: 3,
+          decoration: const InputDecoration(
+            labelText: 'Alamat lengkap')),
+        const SizedBox(height: 24),
+
+        sectionLabel('Metode Pembayaran'),
+        Wrap(spacing: 8, runSpacing: 8, children: [
+          optionChip('Virtual Account',
+            paymentMethod == 'Virtual Account',
+            () => paymentMethod = 'Virtual Account'),
+          optionChip('QRIS', paymentMethod == 'QRIS',
+            () => paymentMethod = 'QRIS'),
+          optionChip('E-Wallet', paymentMethod == 'E-Wallet',
+            () => paymentMethod = 'E-Wallet'),
+          optionChip('COD', paymentMethod == 'COD',
+            () => paymentMethod = 'COD'),
+        ]),
+
+        if (paymentMethod == 'Virtual Account') ...[
+          const SizedBox(height: 20),
+          sectionLabel('Pilih Bank'),
+          Wrap(spacing: 8, runSpacing: 8, children: [
+            for (final bank in [
+              'BCA', 'BRI', 'BNI', 'Mandiri', 'BSI'
+            ])
+              optionChip(bank, selectedBank == bank,
+                () => selectedBank = bank),
+          ]),
+        ],
+
+        if (paymentMethod == 'E-Wallet') ...[
+          const SizedBox(height: 20),
+          sectionLabel('Pilih E-Wallet'),
+          Wrap(spacing: 8, runSpacing: 8, children: [
+            for (final wallet in ['DANA', 'OVO', 'GoPay'])
+              optionChip(wallet, selectedWallet == wallet,
+                () => selectedWallet = wallet),
+          ]),
+        ],
+
+        if (paymentMethod == 'QRIS') ...[
+          const SizedBox(height: 14),
+          const Text('Pembayaran menggunakan pemindaian QRIS.',
+            style: TextStyle(color: Colors.black54)),
+        ],
+
+        const SizedBox(height: 24),
+        sectionLabel('Ringkasan Pesanan'),
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16)),
           child: Column(children: [
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(child: Text(widget.productName)),
                 const SizedBox(width: 8),
-                Text(widget.productPrice,
-                  style: const TextStyle(fontWeight: FontWeight.w700)),
+                Text(widget.productPrice),
               ]),
-            const SizedBox(height: 12),
-            const Divider(),
+            const Divider(height: 24),
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text('Total',
                   style: TextStyle(fontWeight: FontWeight.w800)),
                 Text(widget.productPrice,
                   style: const TextStyle(fontSize: 18,
-                    color: Color(0xFF89AC46),
-                    fontWeight: FontWeight.w800)),
+                    color: green, fontWeight: FontWeight.w800)),
               ]),
           ]),
         ),
-        const SizedBox(height: 18),
-        ElevatedButton(onPressed: _submit,
-          child: const Text('Lanjut Pembayaran')),
+        const SizedBox(height: 20),
+        SizedBox(width: double.infinity,
+          child: ElevatedButton(
+            onPressed: _submit,
+            child: const Text('Lanjut Pembayaran'),
+          ),
+        ),
       ]),
   );
 
   void _submit() {
     if (nameController.text.trim().isEmpty ||
         addressController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Lengkapi nama dan alamat terlebih dahulu.')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text(
+          'Lengkapi nama dan alamat terlebih dahulu.')));
       return;
     }
 
     final cartItems = CartStore.items.value
-        .where((item) => item['selected'] == true)
-        .map((item) => Map<String, dynamic>.from(item)).toList();
+      .where((item) => item['selected'] == true)
+      .map((item) => Map<String, dynamic>.from(item)).toList();
 
     if (widget.fromCart && cartItems.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Pilih produk yang ingin dibeli terlebih dahulu.')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text(
+          'Pilih produk yang ingin dibeli terlebih dahulu.')));
       return;
     }
 
-    final items = widget.fromCart
-        ? cartItems
-        : [
-            {
-              'name': widget.productName,
-              'price': widget.productPrice,
-              'quantity': 1,
-            }
-          ];
+    final items = widget.fromCart ? cartItems : [
+      {'name': widget.productName,
+       'price': widget.productPrice, 'quantity': 1}
+    ];
+
+    String payment = paymentMethod;
+    if (paymentMethod == 'Virtual Account') {
+      payment = 'Virtual Account - $selectedBank';
+    } else if (paymentMethod == 'E-Wallet') {
+      payment = 'E-Wallet - $selectedWallet';
+    }
 
     final orderId = OrderStore.addOrder(
       items: items,
@@ -136,32 +202,4 @@ class _CheckoutPageState extends State<CheckoutPage> {
       MaterialPageRoute(builder: (_) =>
         PaymentPage(orderId: orderId)));
   }
-}
-
-class _PaymentTile extends StatelessWidget {
-  final String title, value, groupValue;
-  final IconData icon;
-  final ValueChanged<String?> onChanged;
-
-  const _PaymentTile({
-    required this.title,
-    required this.value,
-    required this.groupValue,
-    required this.icon,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) => Container(
-    margin: const EdgeInsets.only(bottom: 8),
-    decoration: BoxDecoration(color: Colors.white,
-      borderRadius: BorderRadius.circular(16)),
-    child: RadioListTile<String>(
-      value: value,
-      groupValue: groupValue,
-      onChanged: onChanged,
-      title: Text(title),
-      secondary: Icon(icon, color: const Color(0xFF89AC46)),
-    ),
-  );
 }
